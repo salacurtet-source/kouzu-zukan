@@ -1,0 +1,1356 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>構図コンプリート図鑑</title>
+<meta name="description" content="33構図の図鑑・お題ガチャ・ロケ地マップをまとめた撮影記録アプリ">
+<meta name="theme-color" content="#151515">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="構図図鑑">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Shippori+Mincho+B1:wght@600;800&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+:root{
+  /* Layout: a contact sheet — 33 composition frames as black 35mm film on cool photo paper, selects boxed in red grease pencil, a film-strip tab bar */
+  --paper:#E6E8E4; --paper-2:#DADDD7; --card:#F2F3F0; --ink:#1A1B1D; --ink-2:#575B5F; --line:#C3C7C1;
+  --film:#151515; --film-2:#232323; --film-line:#4A4A4A; --guide:#D7DAD3; --edge:#E3A245; --grease:#C4232D;
+  --on-accent:#FFFFFF; --sprocket:#E6E8E4; --ok:#2E7A4E; --ov-line:#FFFFFF; --ov-mark:#FFD27A;
+  --f-display:"Shippori Mincho B1","Hiragino Mincho ProN","Yu Mincho","Noto Serif JP",serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic","Noto Sans JP",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,"Zen Kaku Gothic New",monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#161514; --paper-2:#1F1D1B; --card:#22201E; --ink:#ECE8E2; --ink-2:#A39D95; --line:#3A3632;
+    --film:#0A0A0A; --film-2:#1B1B1B; --film-line:#3E3E3E; --guide:#D4D0C8; --edge:#E8AA55; --grease:#E5484F;
+    --on-accent:#FFFFFF; --sprocket:#2B2826; --ok:#5DBB86; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#161514; --paper-2:#1F1D1B; --card:#22201E; --ink:#ECE8E2; --ink-2:#A39D95; --line:#3A3632;
+  --film:#0A0A0A; --film-2:#1B1B1B; --film-line:#3E3E3E; --guide:#D4D0C8; --edge:#E8AA55; --grease:#E5484F;
+  --on-accent:#FFFFFF; --sprocket:#2B2826; --ok:#5DBB86; color-scheme:dark;
+}
+html{background:var(--paper)}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.7;-webkit-text-size-adjust:100%;-webkit-tap-highlight-color:transparent}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--film);z-index:35}
+img{max-width:100%}
+button,label.btn{touch-action:manipulation}
+body.lock{overflow:hidden}
+*,*::before,*::after{box-sizing:border-box}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--grease);outline-offset:2px}
+h1,h2,h3{text-wrap:balance}
+
+.app{max-width:1120px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:calc(18px + env(safe-area-inset-top,0px)) calc(112px + env(safe-area-inset-bottom,0px))}
+
+/* header */
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px 16px;align-items:start}
+.eyebrow{font-family:var(--f-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-2);margin:0}
+h1{word-break:keep-all;overflow-wrap:anywhere;font-family:var(--f-display);font-weight:800;font-size:clamp(25px,6.4vw,36px);line-height:1.2;margin:4px 0 0;letter-spacing:.02em}
+.sync{font-family:var(--f-mono);font-size:11px;padding:5px 10px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink-2);white-space:nowrap;display:inline-flex;align-items:center;gap:6px;cursor:pointer}
+.sync::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--line)}
+.sync.ok::before{background:var(--ok)} .sync.err::before,.sync.local::before{background:var(--grease)}
+.tally{grid-column:1/-1;display:grid;grid-template-columns:auto minmax(0,1fr);gap:6px 16px;align-items:center;padding:12px 14px 10px;background:var(--film);border-radius:6px;color:var(--guide)}
+.count{font-family:var(--f-mono);font-variant-numeric:tabular-nums;line-height:1;white-space:nowrap}
+.count b{font-size:30px;font-weight:500;color:var(--edge)}
+.count span{font-size:14px;opacity:.7;margin-left:2px}
+.strip{display:grid;grid-template-columns:repeat(33,minmax(0,1fr));gap:2px;height:16px}
+.strip i{border:1px solid var(--film-line);border-radius:1px}
+.strip i.on{background:var(--grease);border-color:var(--grease)}
+.tally .meta{grid-column:1/-1;font-family:var(--f-mono);font-size:12px;opacity:.78;margin:0;font-variant-numeric:tabular-nums}
+.banner{margin:14px 0 0;background:var(--paper-2);border:1px dashed var(--line);padding:10px 12px;border-radius:8px;font-size:13px;color:var(--ink-2)}
+
+main{margin-top:20px}
+
+/* controls */
+.toolbar{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:13px;line-height:1.4;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip.static{cursor:default}
+.btn{font-size:14px;font-weight:500;display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:42px;padding:8px 16px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;text-decoration:none;line-height:1.3}
+.btn.primary{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.btn.accent{background:var(--grease);color:var(--on-accent);border-color:var(--grease)}
+.btn.ghost{background:transparent}
+.btn.danger{color:var(--grease)}
+.btn.armed{background:var(--grease);color:var(--on-accent);border-color:var(--grease)}
+.btn.sm{min-height:34px;padding:5px 12px;font-size:13px}
+.btn.wide{width:100%}
+.btn:disabled{opacity:.55;cursor:default}
+.note{font-size:13px;color:var(--ink-2);margin:12px 0 0}
+.muted{color:var(--ink-2);font-size:13px}
+.sec-h{font-family:var(--f-display);font-weight:800;font-size:20px;margin:0;display:flex;align-items:baseline;gap:10px}
+.sec-h small,.cat-h small{font-family:var(--f-mono);font-size:12px;font-weight:400;color:var(--ink-2);font-variant-numeric:tabular-nums}
+
+/* contact sheet */
+.cat{margin-top:28px}
+.cat-h{font-family:var(--f-display);font-weight:800;font-size:19px;margin:0;display:flex;align-items:baseline;gap:10px;border-bottom:1px solid var(--line);padding-bottom:6px}
+.contact{list-style:none;padding:0;margin:16px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:24px 18px}
+.cell{min-width:0}
+.frame{position:relative;display:block;width:100%;padding:0;border:0;background:var(--film);border-radius:2px;color:var(--guide);text-align:left;cursor:pointer}
+.frame .spr{display:block;height:12px;position:relative}
+.frame .spr::before{content:"";position:absolute;left:5px;right:5px;top:3px;height:6px;background-image:repeating-linear-gradient(90deg,var(--sprocket) 0 5px,transparent 5px 11px);opacity:.9}
+.frame .pic{display:block;aspect-ratio:3/2;max-width:100%;margin:0 6px;background:var(--film-2);overflow:hidden;position:relative}
+.frame .pic img{display:block;width:100%;height:100%;object-fit:cover}
+.frame .ep{display:flex;justify-content:space-between;gap:6px;font-family:var(--f-mono);font-size:10px;letter-spacing:.06em;color:var(--edge);padding:3px 8px 4px;line-height:1.3}
+.frame:hover .pic{outline:1px solid var(--edge);outline-offset:-1px}
+.box{position:absolute;left:-7px;top:-7px;width:calc(100% + 14px);height:calc(100% + 14px);pointer-events:none;overflow:visible}
+.box path{fill:none;stroke:var(--grease);stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round;vector-effect:non-scaling-stroke}
+.cap{margin-top:9px;display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.cap b{font-family:var(--f-display);font-weight:600;font-size:15px;line-height:1.35;min-width:0}
+.cap small{font-family:var(--f-mono);font-size:11px;color:var(--ink-2);white-space:nowrap}
+.cap small em{font-style:normal;color:var(--grease);font-weight:500}
+.empty-line{margin:12px 0 0;font-size:13px;color:var(--ink-2)}
+
+/* composition guides */
+.gd{display:block;width:100%;height:100%}
+.gd *{vector-effect:non-scaling-stroke}
+.gd .g{stroke:var(--guide);stroke-width:1;opacity:.35;fill:none}
+.gd .a{stroke:var(--guide);stroke-width:1.3;opacity:.8;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.gd .b{stroke:var(--guide);stroke-width:2.1;fill:none;stroke-linecap:round;stroke-linejoin:round}
+.gd .s{fill:var(--edge);stroke:none}
+.gd .o{stroke:var(--edge);stroke-width:1.6;fill:none}
+.gd .sl{stroke:var(--edge);stroke-width:2.2;fill:none;stroke-linecap:round}
+.gd .f{fill:var(--guide);opacity:.12;stroke:none}
+.gd .f2{fill:var(--guide);opacity:.26;stroke:none}
+.gd .d{stroke-dasharray:3 3}
+.gd .r1,.gd .r2,.gd .r3,.gd .r4{stroke:var(--guide);fill:none;stroke-linejoin:round;stroke-linecap:round}
+.gd .r1{stroke-width:2.2} .gd .r2{stroke-width:1.8;opacity:.7} .gd .r3{stroke-width:1.5;opacity:.45} .gd .r4{stroke-width:1.2;opacity:.25}
+.gd.ov{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;--guide:var(--ov-line);--edge:var(--ov-mark);filter:drop-shadow(0 0 1.5px rgb(0 0 0 / .75))}
+.gd.ov .f,.gd.ov .f2{opacity:.18}
+
+/* gacha */
+.gacha{display:grid;gap:18px 18px;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"frame shut" "text text" "opts opts";align-items:center}
+@media (min-width:820px){.gacha{column-gap:32px;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);grid-template-areas:"frame text" "shut text" "opts text";align-items:start}}
+.g-frame{grid-area:frame;min-width:0} .g-shut{grid-area:shut} .g-text{grid-area:text;min-width:0} .g-opts{grid-area:opts}
+.g-frame .frame{cursor:default}
+.pic .curtain{position:absolute;inset:0;background:var(--film);transform:scaleY(0);transform-origin:bottom;pointer-events:none}
+.snap .curtain{animation:open .34s cubic-bezier(.55,0,.2,1)}
+.snap .g-name,.snap .g-count{animation:rise .42s ease-out}
+@keyframes open{from{transform:scaleY(1)}to{transform:scaleY(0)}}
+@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.shutter{flex:none;width:88px;height:88px;border-radius:50%;border:4px solid var(--paper-2);background:var(--film);color:var(--edge);font-family:var(--f-display);font-weight:800;font-size:19px;letter-spacing:.12em;cursor:pointer;box-shadow:0 0 0 2px var(--ink-2),0 5px 0 0 var(--line);transition:transform .08s,box-shadow .08s}
+.shutter:active{transform:translateY(3px);box-shadow:0 0 0 2px var(--ink-2),0 2px 0 0 var(--line)}
+.g-opts{display:flex;flex-wrap:wrap;gap:6px;min-width:0}
+.tgl{display:inline-flex;align-items:center;gap:6px;font-size:13px;padding:6px 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);cursor:pointer}
+.tgl::before{content:"";width:9px;height:9px;border-radius:50%;border:1.5px solid var(--ink-2)}
+.tgl[aria-pressed="true"]::before{background:var(--grease);border-color:var(--grease)}
+.tgl:disabled{opacity:.5;cursor:default}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:999px;overflow:hidden}
+.seg button{border:0;background:var(--card);padding:6px 11px;font-family:var(--f-mono);font-size:12px;color:var(--ink-2);cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--paper)}
+.g-text .eyebrow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rar{font-family:var(--f-mono);font-weight:500;font-size:11px;padding:1px 6px;border-radius:3px;border:1px solid currentColor;letter-spacing:.06em}
+.r1{color:var(--ink-2)} .r2{color:var(--ink)} .r3{color:var(--grease)}
+.g-name{font-family:var(--f-display);font-weight:800;font-size:clamp(28px,7.5vw,42px);line-height:1.2;margin:8px 0 0}
+.g-count{margin:2px 0 0;font-size:17px}
+.g-count b{font-family:var(--f-display);font-size:24px;font-weight:800;color:var(--grease)}
+.g-meta{margin:14px 0 0;display:grid;gap:6px}
+.g-meta div{display:grid;grid-template-columns:4.5em 1fr;gap:10px;align-items:baseline}
+.g-meta dt{font-size:12px;font-weight:700;color:var(--ink-2)} .g-meta dd{margin:0;font-weight:500}
+.g-tip{margin:14px 0 0;font-size:14px;color:var(--ink-2);border-left:2px solid var(--line);padding-left:12px;max-width:42em}
+.row{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+.tag{display:inline-block;font-size:11px;font-weight:700;color:var(--grease);border:1px solid var(--grease);border-radius:999px;padding:0 8px;white-space:nowrap;margin-left:8px;line-height:1.7}
+section.chal{margin-top:40px}
+section.hist{margin-top:32px}
+.ch-list{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,340px),1fr))}
+.ch-item{display:grid;grid-template-columns:92px minmax(0,1fr);gap:12px;align-items:start;padding:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r)}
+.mini{display:block;width:92px;padding:5px;border:0;background:var(--film);border-radius:2px;cursor:pointer}
+.mini .gd{height:auto;aspect-ratio:3/2}
+.ch-body{display:grid;gap:6px;min-width:0}
+.ch-title{margin:0;font-size:14px} .ch-title b{font-family:var(--f-display);font-size:17px}
+.ch-sub{margin:0;font-size:12.5px;color:var(--ink-2)}
+.ch-act{display:flex;flex-wrap:wrap;gap:8px}
+.hist-list{list-style:none;padding:0;margin:10px 0 0}
+.hist-list li{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.hist-list .d{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);margin-left:auto;font-variant-numeric:tabular-nums}
+.pill{font-family:var(--f-mono);font-size:11px;font-weight:500;padding:1px 7px;border-radius:3px}
+.pill.done{background:var(--grease);color:var(--on-accent)} .pill.skip{border:1px solid var(--line);color:var(--ink-2)}
+.link{border:0;background:none;padding:0;color:var(--grease);cursor:pointer;text-decoration:underline;text-underline-offset:3px;font-size:inherit}
+
+/* spots */
+.hot{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:14px}
+.hot-l{font-size:13px;font-weight:700;margin-right:4px}
+.map{margin-top:12px;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.map svg{display:block;width:100%;height:auto}
+.map .gr{stroke:var(--line);stroke-width:1}
+.map .gl{font-family:var(--f-mono);font-size:10px;fill:var(--ink-2)}
+.map .town path{stroke:var(--ink-2);stroke-width:1.3;fill:none}
+.map .town text{font-family:var(--f-body);font-size:11px;fill:var(--ink-2)}
+.map .pin{cursor:pointer;outline:none}
+.map .pin .dot{fill:var(--grease)}
+.map .pin .ring{fill:none;stroke:var(--edge);stroke-width:2;stroke-dasharray:3 3}
+.map .pin:focus-visible .dot{stroke:var(--ink);stroke-width:2.5}
+.map .pn{font-family:var(--f-mono);font-size:11px;font-weight:500;fill:var(--on-accent)}
+.map .pl{font-family:var(--f-body);font-size:12px;font-weight:500;fill:var(--ink);paint-order:stroke;stroke:var(--card);stroke-width:3px;stroke-linejoin:round}
+.map .ghost{font-family:var(--f-body);font-size:13px;fill:var(--ink-2)}
+.map-note{margin:0;padding:8px 12px;font-size:12px;color:var(--ink-2);border-top:1px solid var(--line)}
+.spot-list{list-style:none;padding:0;margin:16px 0 0;display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr))}
+.spot-row{width:100%;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;text-align:left;padding:12px 14px;border:1px solid var(--line);background:var(--card);border-radius:var(--r);cursor:pointer}
+.pin-no{font-family:var(--f-mono);font-size:12px;font-weight:500;width:30px;height:30px;border-radius:50%;background:var(--grease);color:var(--on-accent);display:grid;place-items:center}
+.sr-main{display:grid;gap:2px;min-width:0}
+.sr-main b{font-size:15px;font-weight:700}
+.sr-main small{font-size:12.5px;color:var(--ink-2)}
+.months{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));gap:2px;max-width:240px;margin-top:6px}
+.months i{height:7px;background:var(--paper-2);border:1px solid var(--line);border-radius:1px;font-style:normal}
+.months i.on{background:var(--grease);border-color:var(--grease)}
+.months i.cur{outline:1.5px solid var(--ink);outline-offset:1px}
+.months.lab{max-width:440px;gap:3px}
+.months.lab i{height:auto;padding:3px 0;text-align:center;font-family:var(--f-mono);font-size:11px;color:var(--ink-2)}
+.months.lab i.on{color:var(--on-accent)}
+.empty{margin-top:16px;padding:16px;border:1px dashed var(--line);border-radius:var(--r);font-size:14px;color:var(--ink-2)}
+.empty p{margin:0 0 6px}
+
+/* sheet */
+.sheet-wrap{position:fixed;inset:0;z-index:40;display:flex;align-items:flex-end;justify-content:center}
+.scrim{position:absolute;inset:0;background:rgb(8 8 8 / .55)}
+.sheet{position:relative;width:min(780px,100%);max-height:calc(100% - 20px - env(safe-area-inset-top,0px));overflow:auto;overscroll-behavior:contain;background:var(--paper);border-radius:16px 16px 0 0;padding-left:max(18px,env(safe-area-inset-left,0px));padding-right:max(18px,env(safe-area-inset-right,0px));padding-block:0 calc(28px + env(safe-area-inset-bottom,0px));box-shadow:0 -8px 40px rgb(0 0 0 / .25);animation:up .22s ease-out}
+.sheet:focus{outline:none}
+@keyframes up{from{transform:translateY(18px);opacity:.6}to{transform:none;opacity:1}}
+@media (min-width:820px){.sheet-wrap{align-items:center}.sheet{border-radius:14px;max-height:88%}}
+.sh-head{position:sticky;top:0;z-index:3;background:var(--paper);display:flex;align-items:center;gap:10px;padding:14px 0 12px;border-bottom:1px solid var(--line)}
+.sh-t{flex:1;min-width:0}
+.sh-t h2{font-family:var(--f-display);font-weight:800;font-size:22px;line-height:1.3;margin:2px 0 0;overflow-wrap:anywhere}
+.icon-btn{flex:none;width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);display:grid;place-items:center;cursor:pointer;color:var(--ink)}
+.sbody{display:grid;gap:4px;padding-top:16px}
+.sbody p{margin:0}
+.sbody h3{font-size:13px;font-weight:700;color:var(--ink-2);margin:20px 0 6px;letter-spacing:.04em}
+.sbody h3 small{font-family:var(--f-mono);font-weight:400}
+.hero-frame{max-width:560px;width:100%;justify-self:center;cursor:default}
+.lead{font-size:16px;line-height:1.85;margin-top:16px!important}
+.thumbs{list-style:none;padding:0;margin:4px 0 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:10px}
+.tframe{display:block;width:100%;padding:5px 5px 3px;border:0;background:var(--film);border-radius:2px;cursor:pointer;text-align:left}
+.tframe img,.tframe .rec{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;background:var(--film-2)}
+.tframe .rec{display:grid;place-items:center;color:var(--guide);font-size:11px}
+.tcap{display:block;font-family:var(--f-mono);font-size:10px;color:var(--edge);padding-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+img.broken{visibility:hidden}
+.viewer{display:flex;justify-content:center;background:var(--film);border-radius:4px;padding:10px}
+.ph{position:relative;max-width:100%}
+.ph img{display:block;max-width:100%;max-height:64vh;width:auto;height:auto}
+.ph-empty{width:100%;max-width:420px;aspect-ratio:3/2;display:grid;place-items:center;color:var(--guide);font-size:13px}
+.ph-empty .gd{position:absolute;inset:0;opacity:.45}
+.ph-empty span{position:relative}
+.ovbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+.ovbar>span{font-size:13px;color:var(--ink-2)}
+.facts{display:grid;gap:8px;margin:16px 0 0}
+.facts div{display:grid;grid-template-columns:5em minmax(0,1fr);gap:10px}
+.facts dt{font-size:13px;color:var(--ink-2)} .facts dd{margin:0}
+.mono{font-family:var(--f-mono);font-size:12.5px}
+.memo{white-space:pre-wrap;background:var(--paper-2);padding:10px 12px;border-radius:8px;font-size:14px;margin-top:12px!important}
+.coord{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+.coord code{font-family:var(--f-mono);font-size:14px;font-weight:500;user-select:all}
+.coord-in{display:flex;gap:8px}
+.coord-in input{flex:1}
+.form-act{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.danger-row{display:flex;gap:8px;justify-content:flex-end;margin-top:20px;padding-top:14px;border-top:1px solid var(--line)}
+
+/* forms */
+.form{display:grid;gap:18px;padding-top:16px}
+.fld{display:grid;gap:6px}
+.fld>span{font-size:13px;font-weight:700;color:var(--ink-2)}
+.fld[hidden]{display:none}
+input,select,textarea{font-family:inherit;font-size:16px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--ink);width:100%;min-width:0}
+textarea{resize:vertical;line-height:1.6}
+.grid2{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(180px,1fr))}
+.fs{border:0;padding:0;margin:0;display:grid;gap:12px;min-width:0}
+.fs legend{font-size:13px;font-weight:700;color:var(--ink-2);padding:0;margin-bottom:8px}
+.fs legend small{font-weight:400}
+.fs-g{display:grid;gap:6px}
+.fs-l{font-family:var(--f-mono);font-size:11px;letter-spacing:.1em;color:var(--ink-2)}
+.mchips{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:6px}
+.mchips .chip{padding:6px 0;text-align:center;font-family:var(--f-mono)}
+.pick{display:grid;gap:10px;justify-items:start}
+.pick-pv{width:100%;aspect-ratio:3/2;background:var(--film);border-radius:4px;display:grid;place-items:center;overflow:hidden;color:var(--guide);font-size:13px}
+.pick-pv img{width:100%;height:100%;object-fit:contain}
+.vh{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;clip:rect(0 0 0 0);pointer-events:none}
+.exif-line{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);margin:0}
+.hint{font-size:13px;color:var(--ink-2);margin:0}
+.hint.ok{color:var(--ok)}
+.err{color:var(--grease);font-size:13px;margin:0}
+
+/* tab bar */
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--film);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:12px calc(6px + env(safe-area-inset-bottom,0px))}
+.tabbar::before{content:"";position:absolute;left:8px;right:8px;top:3px;height:5px;background-image:repeating-linear-gradient(90deg,var(--sprocket) 0 6px,transparent 6px 13px);opacity:.35}
+.tabs{max-width:560px;margin:0 auto;display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.tab{display:grid;justify-items:center;gap:2px;padding:4px 0 6px;border:0;background:none;color:var(--guide);opacity:.72;cursor:pointer;font-size:12px;font-weight:500}
+.tab svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.tab[aria-current="page"]{color:var(--edge);opacity:1}
+
+.toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:60;background:var(--ink);color:var(--paper);padding:10px 18px;border-radius:999px;font-size:14px;max-width:calc(100% - 32px);box-shadow:0 6px 24px rgb(0 0 0 / .22);text-align:center}
+
+@media (prefers-reduced-motion: reduce){
+  .snap .curtain,.snap .g-name,.snap .g-count,.sheet{animation:none}
+  .shutter{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="top">
+    <div>
+      <p class="eyebrow">33 Compositions · 3:2 Frame</p>
+      <h1>構図コンプリート<wbr>図鑑</h1>
+    </div>
+    <button class="sync" id="sync" data-act="data" aria-label="データの保存とバックアップ">読み込み中</button>
+    <div class="tally" aria-label="撮影済みの構図">
+      <div class="count"><b id="shotN">00</b><span>/33</span></div>
+      <div class="strip" id="strip" aria-hidden="true"></div>
+      <p class="meta" id="meta">記録を読み込んでいます</p>
+    </div>
+  </header>
+  <p class="banner" id="banner" hidden>このブラウザの設定では記録を保存できません（プライベートブラウズなど）。通常の画面で開くか、ホーム画面に追加したアプリから開いてください。</p>
+  <main>
+    <section id="p-zukan" class="panel" aria-label="構図図鑑"></section>
+    <section id="p-gacha" class="panel" aria-label="お題ガチャ" hidden></section>
+    <section id="p-spots" class="panel" aria-label="ロケ地マップ" hidden></section>
+  </main>
+</div>
+
+<nav class="tabbar" aria-label="メニュー">
+  <div class="tabs">
+    <button class="tab" data-act="tab" data-v="zukan" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="8" height="6" rx="1"/><rect x="13" y="5" width="8" height="6" rx="1"/><rect x="3" y="13" width="8" height="6" rx="1"/><rect x="13" y="13" width="8" height="6" rx="1"/></svg>構図図鑑</button>
+    <button class="tab" data-act="tab" data-v="gacha"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.2"/><path d="M12 3.5v5.3M20.1 9.4l-5 1.6M17 19l-3.1-4.3M7 19l3.1-4.3M3.9 9.4l5 1.6"/></svg>お題ガチャ</button>
+    <button class="tab" data-act="tab" data-v="spots"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-6.5-5.8-6.5-11.2a6.5 6.5 0 0 1 13 0C18.5 15.2 12 21 12 21z"/><circle cx="12" cy="9.8" r="2.3"/></svg>ロケ地</button>
+  </div>
+</nav>
+
+<div class="sheet-wrap" id="sheetWrap" hidden>
+  <div class="scrim" data-act="close"></div>
+  <section class="sheet" id="sheet" role="dialog" aria-modal="true" tabindex="-1"></section>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ---------- data: 33 compositions ---------- */
+const CATS = [
+  {k:'place', n:'配置'},
+  {k:'line', n:'線と形'},
+  {k:'depth', n:'奥行きと枠'},
+  {k:'rhythm', n:'面とリズム'}
+];
+const COMPS = [
+  {id:'hinomaru',cat:'place',lv:1,name:'日の丸構図',en:'CENTER',
+   desc:'主役を画面のまん中に置く、いちばんシンプルな構図。何を撮ったかが一目で伝わります。',
+   tip:'背景を整理して、主役以外の要素を減らすのがコツ。周りの余白が上下左右で均等になるよう立ち位置を調整します。',
+   ex:['雪原の一本木','鳥居や地蔵','昭和の看板'],
+   svg:'<line class="g" x1="30" y1="0" x2="30" y2="40"/><line class="g" x1="0" y1="20" x2="60" y2="20"/><circle class="o" cx="30" cy="20" r="9"/><circle class="s" cx="30" cy="20" r="3.5"/>'},
+  {id:'sanbun',cat:'place',lv:1,name:'三分割構図',en:'RULE OF THIRDS',
+   desc:'縦横を3等分した線の交点や線上に主役を置く。安定感と動きのバランスが取りやすい定番です。',
+   tip:'ファインダーのグリッド表示を3×3にして、主役を交点に合わせます。地平線は上か下の線に。',
+   ex:['あぜ道を歩く人','夕日と稜線','田んぼの中の小屋'],
+   svg:'<line class="a" x1="20" y1="0" x2="20" y2="40"/><line class="a" x1="40" y1="0" x2="40" y2="40"/><line class="a" x1="0" y1="13.33" x2="60" y2="13.33"/><line class="a" x1="0" y1="26.67" x2="60" y2="26.67"/><circle class="s" cx="40" cy="13.33" r="3"/>'},
+  {id:'nibun',cat:'place',lv:1,name:'二分割構図',en:'HALVES',
+   desc:'画面を上下か左右に半分ずつ分ける。対等な2つの要素を並べると、静かで堂々とした印象になります。',
+   tip:'水平線を正確に真ん中へ。水準器を表示して傾きをゼロにすると締まります。',
+   ex:['雪原と青空','海と空の水平線','田んぼと山'],
+   svg:'<rect class="f" x="0" y="0" width="60" height="20"/><line class="b" x1="0" y1="20" x2="60" y2="20"/>'},
+  {id:'yonbun',cat:'place',lv:2,name:'四分割構図',en:'QUARTERS',
+   desc:'縦横を4等分した線を使う。三分割より端に寄せられるので、余白を大きく取りたいときに効きます。',
+   tip:'主役を外側の線に置き、反対側の3/4を空や雪で広く残します。',
+   ex:['広い空と小さな電柱','雪原の足跡','湖畔のボート'],
+   svg:'<line class="a" x1="15" y1="0" x2="15" y2="40"/><line class="g" x1="30" y1="0" x2="30" y2="40"/><line class="a" x1="45" y1="0" x2="45" y2="40"/><line class="a" x1="0" y1="10" x2="60" y2="10"/><line class="g" x1="0" y1="20" x2="60" y2="20"/><line class="a" x1="0" y1="30" x2="60" y2="30"/><circle class="s" cx="45" cy="10" r="2.8"/>'},
+  {id:'phi',cat:'place',lv:2,name:'黄金比構図',en:'PHI GRID',
+   desc:'1：0.618：1 の比で分けた線に主役を置く。三分割より少し中央寄りで、自然な落ち着きが出ます。',
+   tip:'三分割の交点から、ほんの少し内側に主役を寄せるイメージで十分です。',
+   ex:['古民家の玄関','ベンチと木','駅のホーム'],
+   svg:'<line class="a" x1="22.92" y1="0" x2="22.92" y2="40"/><line class="a" x1="37.08" y1="0" x2="37.08" y2="40"/><line class="a" x1="0" y1="15.28" x2="60" y2="15.28"/><line class="a" x1="0" y1="24.72" x2="60" y2="24.72"/><circle class="s" cx="37.08" cy="15.28" r="3"/>'},
+  {id:'spiral',cat:'place',lv:3,name:'黄金螺旋構図',en:'GOLDEN SPIRAL',
+   desc:'渦の中心に主役を置き、外側の大きな流れで視線を巻き込む。難しいぶん、決まると絵画のようになります。',
+   tip:'曲線の多い場所で探すのが近道。渦の中心に、いちばん明るいものか目立つものを置きます。',
+   ex:['曲がる川','棚田のカーブ','渦を巻く雲'],
+   svg:'<line class="g" x1="40" y1="0" x2="40" y2="40"/><line class="g" x1="40" y1="20" x2="60" y2="20"/><path class="b" d="M0 40A40 40 0 0 1 40 0A20 20 0 0 1 60 20A12 12 0 0 1 48 32A7 7 0 0 1 41 25A4 4 0 0 1 45 21A2 2 0 0 1 47 23"/><circle class="s" cx="45.4" cy="23.4" r="2.4"/>'},
+  {id:'sym',cat:'place',lv:2,name:'シンメトリー構図',en:'SYMMETRY',
+   desc:'左右（または上下）を対称にそろえる。端正で、張りつめた美しさが出ます。',
+   tip:'被写体の真正面に立ち、中心線とレンズの中心をぴったり合わせます。わずかなズレが目立つので慎重に。',
+   ex:['神社の参道','駅舎の正面','昭和の商店'],
+   svg:'<line class="g d" x1="30" y1="0" x2="30" y2="40"/><path class="b" d="M8 34L20 12L27 34"/><path class="b" d="M52 34L40 12L33 34"/><line class="a" x1="4" y1="34" x2="56" y2="34"/>'},
+
+  {id:'diag',cat:'line',lv:1,name:'対角線構図',en:'DIAGONAL',
+   desc:'画面の対角に線を通す。奥行きと動きが生まれ、静かな景色にも勢いが出ます。',
+   tip:'線の始まりを画面の角に近づけると、斜めの力が強くなります。',
+   ex:['線路','雪の斜面','坂道'],
+   svg:'<line class="g" x1="0" y1="0" x2="60" y2="40"/><line class="b" x1="0" y1="40" x2="60" y2="0"/>'},
+  {id:'tri',cat:'line',lv:1,name:'三角構図',en:'TRIANGLE',
+   desc:'底辺の広い三角形をつくる。どっしりとした安定感と重みが出ます。',
+   tip:'三角の頂点を画面上部の中心付近へ。裾野を画面の下辺いっぱいに広げます。',
+   ex:['山の稜線','茅葺き屋根','積み上げた薪'],
+   svg:'<line class="g" x1="0" y1="36" x2="60" y2="36"/><path class="b" d="M8 36L30 6L52 36Z"/>'},
+  {id:'invtri',cat:'line',lv:2,name:'逆三角構図',en:'INVERTED TRIANGLE',
+   desc:'上が広く、下がすぼむ形。不安定さや緊張感、上に向かう広がりを表現できます。',
+   tip:'谷や枝の広がりを見上げる位置で探します。すぼまる先に主役を置くと視線が集まります。',
+   ex:['V字の渓谷','見上げた木の枝','谷間の集落'],
+   svg:'<path class="b" d="M8 4L52 4L30 36Z"/><circle class="s" cx="30" cy="33" r="2.4"/>'},
+  {id:'scurve',cat:'line',lv:2,name:'S字構図',en:'S-CURVE',
+   desc:'S字の曲線で、視線を手前から奥へ運ぶ。柔らかさとリズムが出ます。',
+   tip:'少し高い位置から撮ると曲線がはっきり見えます。曲線の先は画面の上で終わらせます。',
+   ex:['蛇行する川','峠道','雪のあぜ道'],
+   svg:'<path class="b" d="M24 40C46 34 44 25 30 21S14 8 36 0"/>'},
+  {id:'ccurve',cat:'line',lv:2,name:'C字構図',en:'C-CURVE',
+   desc:'C字のカーブで主役を包み込む。まとまりと安心感が出ます。',
+   tip:'カーブの内側に主役を置きます。弧の外側は画面の端に沿わせると収まりがいいです。',
+   ex:['湖岸','カーブする道路','海岸線'],
+   svg:'<path class="b" d="M46 4C12 2 12 38 46 36"/><circle class="s" cx="38" cy="20" r="3"/>'},
+  {id:'radial',cat:'line',lv:2,name:'放射線構図',en:'RADIAL',
+   desc:'一点から線が四方に広がる。勢い、広がり、光のエネルギーを表現できます。',
+   tip:'放射の中心を画面の中か、すぐ外に置きます。広角で寄ると線が強調されます。',
+   ex:['雲間の光芒','花火','見上げた木の幹と枝'],
+   svg:'<line class="a" x1="30" y1="20" x2="0" y2="0"/><line class="a" x1="30" y1="20" x2="20" y2="0"/><line class="a" x1="30" y1="20" x2="40" y2="0"/><line class="a" x1="30" y1="20" x2="60" y2="0"/><line class="a" x1="30" y1="20" x2="60" y2="20"/><line class="a" x1="30" y1="20" x2="60" y2="40"/><line class="a" x1="30" y1="20" x2="40" y2="40"/><line class="a" x1="30" y1="20" x2="20" y2="40"/><line class="a" x1="30" y1="20" x2="0" y2="40"/><line class="a" x1="30" y1="20" x2="0" y2="20"/><circle class="s" cx="30" cy="20" r="2.6"/>'},
+  {id:'leading',cat:'line',lv:1,name:'リーディングライン',en:'LEADING LINES',
+   desc:'道や線を道しるべにして、視線を主役まで連れていく構図です。',
+   tip:'線を画面の下辺から始めて、行き着く先に主役を置きます。線と主役の間に邪魔なものを入れないこと。',
+   ex:['あぜ道の先の小屋','線路の先の駅','雪道の轍'],
+   svg:'<path class="b" d="M4 40Q28 36 40 15"/><path class="a" d="M20 40Q34 33 42 15"/><circle class="s" cx="41" cy="12.4" r="2.8"/>'},
+  {id:'vp',cat:'line',lv:2,name:'一点透視構図',en:'VANISHING POINT',
+   desc:'平行な線が一点に集まる。強い奥行きと、吸い込まれる感覚が出ます。',
+   tip:'道や線路の真ん中に立ち、消失点を画面の中央か三分割の線に合わせます。',
+   ex:['並木道','トンネル','商店街のアーケード'],
+   svg:'<line class="g" x1="0" y1="18" x2="60" y2="18"/><line class="a" x1="0" y1="0" x2="30" y2="18"/><line class="a" x1="60" y1="0" x2="30" y2="18"/><line class="b" x1="0" y1="40" x2="30" y2="18"/><line class="b" x1="60" y1="40" x2="30" y2="18"/><circle class="s" cx="30" cy="18" r="2"/>'},
+  {id:'horiz',cat:'line',lv:1,name:'水平構図',en:'HORIZONTALS',
+   desc:'横の線を重ねて、静けさと広がりを出す。',
+   tip:'傾きは厳禁。横線の間隔に強弱をつけると単調になりません。',
+   ex:['雪原','刈り取り後の田んぼ','湖面'],
+   svg:'<line class="b" x1="0" y1="15" x2="60" y2="15"/><line class="a" x1="0" y1="23" x2="60" y2="23"/><line class="a" x1="0" y1="29" x2="60" y2="29"/><line class="g" x1="0" y1="34" x2="60" y2="34"/>'},
+  {id:'vert',cat:'line',lv:1,name:'垂直構図',en:'VERTICALS',
+   desc:'縦の線を並べて、高さと力強さを出す。',
+   tip:'カメラを水平に構え、縦線が傾かないように。縦位置にするとさらに伸びやかになります。',
+   ex:['杉林','電柱の列','雪の中の木立'],
+   svg:'<line class="b" x1="10" y1="6" x2="10" y2="40"/><line class="a" x1="19" y1="11" x2="19" y2="40"/><line class="b" x1="31" y1="2" x2="31" y2="40"/><line class="a" x1="43" y1="9" x2="43" y2="40"/><line class="a" x1="51" y1="14" x2="51" y2="40"/>'},
+  {id:'zigzag',cat:'line',lv:3,name:'ジグザグ構図',en:'ZIGZAG',
+   desc:'折れ線で視線を左右に振りながら奥へ導く。リズムと長い距離感が出ます。',
+   tip:'少し高い位置から見下ろすと、ジグザグが読みやすくなります。終点に主役を。',
+   ex:['つづら折りの道','石段','棚田の段'],
+   svg:'<path class="b" d="M6 6L54 12L8 23L52 34"/><circle class="s" cx="52" cy="34" r="2.6"/>'},
+
+  {id:'frame',cat:'depth',lv:2,name:'額縁構図',en:'FRAME IN FRAME',
+   desc:'手前の窓・門・木で主役を囲む。視線が自然に中へ向かい、奥行きも出ます。',
+   tip:'額縁は暗く、主役は明るく。額縁の側にピントを持っていかれないよう注意します。',
+   ex:['鳥居越しの景色','窓越しの雪景色','トンネルの出口'],
+   svg:'<path class="f2" fill-rule="evenodd" d="M0 0H60V40H0Z M12 8V32H48V8Z"/><rect class="a" x="12" y="8" width="36" height="24"/><circle class="s" cx="30" cy="20" r="3"/>'},
+  {id:'fg',cat:'depth',lv:2,name:'前景構図',en:'FOREGROUND',
+   desc:'手前に草花や枝をぼかして入れ、奥行きと空気感をつくる。',
+   tip:'絞りを開けて、前景のすぐ近くまでレンズを寄せます。ぼかす範囲は画面の端1/4くらいまで。',
+   ex:['ススキ越しの夕日','雪の枝越しの山','花越しの駅舎'],
+   svg:'<line class="g" x1="0" y1="22" x2="60" y2="22"/><circle class="f2" cx="5" cy="36" r="11"/><circle class="f" cx="18" cy="42" r="9"/><circle class="f" cx="57" cy="41" r="8"/><circle class="s" cx="38" cy="15" r="3"/>'},
+  {id:'layer',cat:'depth',lv:3,name:'レイヤー構図',en:'LAYERS',
+   desc:'前景・中景・遠景の3層を重ねる。風景に深い奥行きが生まれます。',
+   tip:'まず遠景を決め、次に中景の主役、最後に前景を探す順番で組み立てます。',
+   ex:['稲・農家・山','柵・牛・丘','雪の木・集落・山並み'],
+   svg:'<path class="g" d="M0 17L18 9L32 13L48 5L60 8"/><path class="a" d="M0 25L14 19L26 23L40 16L60 22"/><path class="f2" d="M0 40V31Q14 27 28 32T60 33V40Z"/><circle class="s" cx="34" cy="26.5" r="2.6"/>'},
+  {id:'aerial',cat:'depth',lv:3,name:'空気遠近構図',en:'AERIAL PERSPECTIVE',
+   desc:'遠くの山ほど霞んで淡くなる重なりを撮る。水墨画のような静けさが出ます。',
+   tip:'朝霧や逆光の時間帯が狙い目。望遠で山並みを圧縮すると層がはっきりします。',
+   ex:['朝霧の山並み','雲海','雨上がりの谷'],
+   svg:'<path class="r4" d="M0 14L10 9L22 12L36 5L48 10L60 7"/><path class="r3" d="M0 21L12 15L24 19L38 12L50 17L60 14"/><path class="r2" d="M0 28L14 22L28 26L42 19L60 24"/><path class="r1" d="M0 35L16 29L30 33L44 27L60 31"/>'},
+  {id:'aori',cat:'depth',lv:1,name:'アオリ構図',en:'LOW ANGLE',
+   desc:'低い位置から見上げる。被写体に迫力と存在感が出ます。',
+   tip:'地面すれすれまで下げて、広角で寄ります。可動式のモニターを使うと楽です。',
+   ex:['大木','雪の積もった枝','古い看板'],
+   svg:'<line class="b" x1="8" y1="40" x2="24" y2="2"/><line class="b" x1="52" y1="40" x2="36" y2="2"/><line class="g" x1="12" y1="30" x2="48" y2="30"/><line class="g" x1="16" y1="20" x2="44" y2="20"/><line class="g" x1="20" y1="10" x2="40" y2="10"/>'},
+  {id:'fukan',cat:'depth',lv:2,name:'俯瞰構図',en:'BIRD’S-EYE',
+   desc:'高い所から見下ろす。全体の形やパターンがよく見えます。',
+   tip:'展望台や高台を探します。見下ろす角度が深いほど、地面の模様が主役になります。',
+   ex:['棚田を見下ろす','町並み','雪に残る足跡'],
+   svg:'<path class="a" d="M0 10Q30 2 60 12"/><path class="a" d="M0 18Q30 10 60 20"/><path class="b" d="M0 26Q30 18 60 28"/><path class="a" d="M0 34Q30 26 60 36"/><circle class="s" cx="36" cy="22.6" r="1.9"/>'},
+
+  {id:'yohaku',cat:'rhythm',lv:2,name:'余白構図',en:'NEGATIVE SPACE',
+   desc:'主役を小さく置き、何もない空間を広く残す。静けさや孤独感が伝わります。',
+   tip:'余白は空・雪・霧・水面など単調な面でつくります。主役の視線の先に余白を空けます。',
+   ex:['雪原の小さな人影','霧の中の一本木','空に1羽の鳥'],
+   svg:'<line class="g" x1="0" y1="33" x2="60" y2="33"/><circle class="s" cx="47" cy="30" r="2.2"/>'},
+  {id:'pattern',cat:'rhythm',lv:1,name:'パターン構図',en:'PATTERN',
+   desc:'同じ形の繰り返しで画面を埋める。リズムが生まれます。',
+   tip:'画面の端まで繰り返しで埋め、途切れ目を入れないのがコツです。',
+   ex:['稲のはさがけ','瓦屋根','並んだ鳥居'],
+   svg:'<circle class="o" cx="10" cy="10" r="2.6"/><circle class="o" cx="20" cy="10" r="2.6"/><circle class="o" cx="30" cy="10" r="2.6"/><circle class="o" cx="40" cy="10" r="2.6"/><circle class="o" cx="50" cy="10" r="2.6"/><circle class="o" cx="10" cy="20" r="2.6"/><circle class="o" cx="20" cy="20" r="2.6"/><circle class="o" cx="30" cy="20" r="2.6"/><circle class="o" cx="40" cy="20" r="2.6"/><circle class="o" cx="50" cy="20" r="2.6"/><circle class="o" cx="10" cy="30" r="2.6"/><circle class="o" cx="20" cy="30" r="2.6"/><circle class="o" cx="30" cy="30" r="2.6"/><circle class="o" cx="40" cy="30" r="2.6"/><circle class="o" cx="50" cy="30" r="2.6"/>'},
+  {id:'breakp',cat:'rhythm',lv:2,name:'パターン崩し構図',en:'BREAK THE PATTERN',
+   desc:'繰り返しの中に1つだけ違うものを入れる。視線がその一点に集まります。',
+   tip:'まずパターンを見つけ、次に「1つだけ違うもの」を探します。三分割の交点に置くと効きます。',
+   ex:['並んだ傘の中の赤','整列した車の中の1台','枯れ木の中の紅葉'],
+   svg:'<g opacity=".55"><circle class="o" cx="10" cy="10" r="2.6"/><circle class="o" cx="20" cy="10" r="2.6"/><circle class="o" cx="30" cy="10" r="2.6"/><circle class="o" cx="40" cy="10" r="2.6"/><circle class="o" cx="50" cy="10" r="2.6"/><circle class="o" cx="10" cy="20" r="2.6"/><circle class="o" cx="20" cy="20" r="2.6"/><circle class="o" cx="30" cy="20" r="2.6"/><circle class="o" cx="50" cy="20" r="2.6"/><circle class="o" cx="10" cy="30" r="2.6"/><circle class="o" cx="20" cy="30" r="2.6"/><circle class="o" cx="30" cy="30" r="2.6"/><circle class="o" cx="40" cy="30" r="2.6"/><circle class="o" cx="50" cy="30" r="2.6"/></g><circle class="s" cx="40" cy="20" r="3.6"/>'},
+  {id:'contrast',cat:'rhythm',lv:2,name:'対比構図',en:'CONTRAST',
+   desc:'大小・明暗・新旧・色の差を並べて、主役を引き立てる。',
+   tip:'何と何を比べるかを先に決めます。差が大きいほど伝わります。',
+   ex:['大きな山と小さな家','新しい車と昭和の看板','雪の白と赤い屋根'],
+   svg:'<circle class="f2" cx="20" cy="23" r="13"/><circle class="a" cx="20" cy="23" r="13"/><circle class="s" cx="47" cy="12" r="2.6"/>'},
+  {id:'three',cat:'rhythm',lv:2,name:'3点構図',en:'RULE OF ODDS',
+   desc:'主役を3つ（奇数）で配置する。偶数より自然で、まとまりが出ます。',
+   tip:'3つを一直線に並べず、三角形を描く位置に。大きさに差があるとさらに良くなります。',
+   ex:['雪原の3本の木','並んだ地蔵','3軒の農家'],
+   svg:'<path class="g d" d="M17 27L30 16L45 25Z"/><circle class="s" cx="17" cy="27" r="3.2"/><circle class="s" cx="30" cy="16" r="2.6"/><circle class="s" cx="45" cy="25" r="2.2"/>'},
+  {id:'two',cat:'rhythm',lv:2,name:'2点構図',en:'TWO SUBJECTS',
+   desc:'2つの主役を呼応させる。関係性や距離感が物語になります。',
+   tip:'2つの大きさか位置に差をつけ、あいだの空間も意識します。',
+   ex:['2本の木','親子','向かい合う2軒の小屋'],
+   svg:'<line class="g d" x1="17" y1="24" x2="44" y2="17"/><circle class="s" cx="17" cy="24" r="3.4"/><circle class="s" cx="44" cy="17" r="2.6"/>'},
+  {id:'reflect',cat:'rhythm',lv:2,name:'リフレクション構図',en:'REFLECTION',
+   desc:'水面やガラスに映る像を入れて、上下の対称をつくる。',
+   tip:'風のない早朝が狙い目。カメラを水面に近づけるほど映り込みが大きくなります。',
+   ex:['田植え前の水鏡の棚田','雨上がりの水たまり','湖に映る紅葉'],
+   svg:'<line class="b" x1="0" y1="20" x2="60" y2="20"/><path class="a" d="M10 20L24 7L34 13L48 20"/><path class="a d" d="M10 20L24 33L34 27L48 20"/>'},
+  {id:'silhouette',cat:'rhythm',lv:2,name:'シルエット構図',en:'SILHOUETTE',
+   desc:'逆光で被写体を黒い影にして、形だけで見せる。',
+   tip:'明るい空に露出を合わせ、被写体を空に重ねます。形が分かりやすい角度を探します。',
+   ex:['夕焼けのはさがけ','木と人','電線と鳥'],
+   svg:'<circle class="o" cx="22" cy="15" r="6"/><path class="s" d="M0 40V33Q24 29 60 34V40Z"/><path class="sl" d="M42 32V19M42 23L37 18M42 26L47 20"/>'},
+  {id:'crop',cat:'rhythm',lv:3,name:'はみ出し構図',en:'TIGHT CROP',
+   desc:'主役をあえて画面からはみ出させ、大胆に切り取る。見えない部分を想像させます。',
+   tip:'いちばん語る部分だけを残して、思い切って寄ります。中途半端なはみ出しは失敗に見えます。',
+   ex:['古い車のボンネット','看板の文字の一部','雪をかぶった枝先'],
+   svg:'<circle class="o" cx="52" cy="32" r="20"/><circle class="o" cx="52" cy="32" r="12"/><circle class="s" cx="52" cy="32" r="4"/>'}
+];
+COMPS.forEach((c, i) => { c.no = i + 1; });
+const CMAP = Object.fromEntries(COMPS.map(c => [c.id, c]));
+const TOTAL = COMPS.length;
+
+const RULES = ['縦位置で撮る','ローアングル（膝より下から）','ハイアングル（目線より高く）','逆光で撮る','前ボケを入れる','モノクロで撮る','人工物を1つだけ入れる','空を入れない','空を画面の2/3にする','その場から1歩も動かない','絞り開放だけで撮る','F8固定で撮る','赤いものを1点入れる','影を主役にする','足元を入れる','いつもより1歩近づく'];
+const COUNTS = ['1枚入魂','3枚','5枚','10分で撮れるだけ'];
+const TIMES = ['早朝','朝','日中','夕方','マジックアワー','夜'];
+const RAR = ['', 'N', 'R', 'SR'];
+const TOWNS = [['大館',40.2714,140.5644],['鹿角',40.2156,140.7883],['小坂',40.3283,140.7436],['北秋田',40.2264,140.3708],['能代',40.2117,140.0269],['十和田湖',40.4400,140.8900],['弘前',40.6031,140.4642],['八幡平',39.9575,140.8536],['秋田',39.7200,140.1025]];
+const MONTH = new Date().getMonth() + 1;
+
+/* ---------- state ---------- */
+const S = {
+  photos: [], spots: [], challenges: [], shot: new Map(),
+  tab: 'zukan', cat: 'all', onlyMissing: false,
+  mode: 'loading', sync: 'connect', idb: null, persisted: false, persistAsked: false,
+  sheet: null, stack: [], form: null, ov: null, lastFocus: null,
+  g: { prefer: true, rules: true, spot: false, lv: 0, n: 0, cur: null, forceSpot: null }
+};
+try {
+  const p = JSON.parse(localStorage.getItem('kouzu-prefs') || '{}');
+  if (p.g) { S.g.prefer = p.g.prefer !== false; S.g.rules = p.g.rules !== false; S.g.spot = !!p.g.spot; S.g.lv = p.g.lv | 0; S.g.n = p.g.n | 0; }
+  if (p.cat && (p.cat === 'all' || CATS.some(c => c.k === p.cat))) S.cat = p.cat;
+} catch (e) {}
+function savePrefs() {
+  try { localStorage.setItem('kouzu-prefs', JSON.stringify({ cat: S.cat, g: { prefer: S.g.prefer, rules: S.g.rules, spot: S.g.spot, lv: S.g.lv, n: S.g.n } })); } catch (e) {}
+}
+
+/* ---------- helpers ---------- */
+const $ = (s, r = document) => r.querySelector(s);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, ch => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[ch]));
+const pad2 = n => String(n).padStart(2, '0');
+const stars = lv => '★'.repeat(lv);
+const pick = a => a[Math.floor(Math.random() * a.length)];
+function wpick(items, w) { const t = w.reduce((a, b) => a + b, 0); let r = Math.random() * t; for (let i = 0; i < items.length; i++) { r -= w[i]; if (r <= 0) return items[i]; } return items[items.length - 1]; }
+const newId = p => p + '_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+function today() { const d = new Date(); return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate()); }
+const fmtD = s => s ? String(s).replace(/-/g, '.') : '';
+function fmtTs(ts) { if (!ts) return ''; const d = new Date(ts); return (d.getMonth() + 1) + '/' + d.getDate(); }
+const fmtLat = a => Math.abs(a).toFixed(4) + '°' + (a >= 0 ? 'N' : 'S');
+const fmtLng = a => Math.abs(a).toFixed(4) + '°' + (a >= 0 ? 'E' : 'W');
+const hasXY = s => s && Number.isFinite(s.lat) && Number.isFinite(s.lng);
+const inSeason = s => (s.months || []).includes(MONTH);
+const spotById = id => S.spots.find(s => s.id === id);
+function km(a1, o1, a2, o2) { const R = 6371, r = Math.PI / 180; const da = (a2 - a1) * r, dn = (o2 - o1) * r; const h = Math.sin(da / 2) ** 2 + Math.cos(a1 * r) * Math.cos(a2 * r) * Math.sin(dn / 2) ** 2; return 2 * R * Math.asin(Math.sqrt(h)); }
+function nearestSpot(lat, lng) { let best = null; for (const s of S.spots) { if (!hasXY(s)) continue; const d = km(lat, lng, s.lat, s.lng); if (!best || d < best.d) best = { s, d }; } return best; }
+function guide(c, cls, stretch) { return `<svg class="gd ${cls || ''}" viewBox="0 0 60 40" ${stretch ? 'preserveAspectRatio="none"' : ''} aria-hidden="true">${c.svg}</svg>`; }
+const BOX = '<svg class="box" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"><path d="M4 5C28 2 66 4 97 3C98 28 96 66 98 96C70 98 32 96 3 97C2 70 4 34 2 8"/></svg>';
+const ICON_X = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" fill="none"/></svg>';
+const ICON_BACK = '<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M15 5l-7 7 7 7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>';
+function exifLine(x) {
+  if (!x) return '';
+  const a = [];
+  if (x.model) a.push(x.model);
+  if (x.lens) a.push(x.lens);
+  if (x.f) a.push('f/' + (Math.round(x.f * 10) / 10));
+  if (x.ss) a.push(x.ss >= 1 ? (Math.round(x.ss * 10) / 10) + 's' : '1/' + Math.round(1 / x.ss) + 's');
+  if (x.iso) a.push('ISO ' + x.iso);
+  if (x.fl) a.push(Math.round(x.fl) + 'mm');
+  return a.join(' · ');
+}
+function parseCoord(t) {
+  if (!t) return null;
+  const s = String(t);
+  let m = s.match(/!3d(-?\d+\.\d+)!4d(-?\d+\.\d+)/) || s.match(/(-?\d{1,3}\.\d{2,})\s*[,，、\s]\s*(-?\d{1,3}\.\d{2,})/);
+  if (!m) return null;
+  let a = +m[1], b = +m[2];
+  if (Math.abs(a) > 90 && Math.abs(b) <= 90) [a, b] = [b, a];
+  if (!Number.isFinite(a) || !Number.isFinite(b) || Math.abs(a) > 90 || Math.abs(b) > 180) return null;
+  return { lat: a, lng: b };
+}
+function errMsg(e) {
+  const c = e && e.code;
+  if (e && e.name === 'QuotaExceededError') return '端末の空き容量が足りません。使わない写真を削除するか、空き容量を増やしてください';
+  if (c === 'badbackup') return 'このファイルは構図コンプリート図鑑のバックアップではありません';
+  if (c === 'geo') return '現在地を取得できませんでした。位置情報の許可を確認してください';
+  if (c === 'quota_exceeded' || c === 'quota_or_state') return '保存容量がいっぱいです。使わない写真を削除してから保存してください';
+  if (c === 'too_large') return '画像が大きすぎて保存できませんでした';
+  if (c === 'unsupported_type' || c === 'decode') return 'この画像は読み込めませんでした。JPEGかPNGで選んでください';
+  if (c === 'rate_limited' || c === 'resource_exhausted') return '操作が続いたため、少し待ってからもう一度お試しください';
+  if (c === 'not_granted' || c === 'capability_disabled') return 'この表示では写真を保存できません。写真なしで記録してください';
+  if (c === 'invalid_argument') return 'この表示では書き込みができません';
+  return '保存できませんでした。通信状況を確認して、もう一度お試しください';
+}
+function toast(msg) { const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { t.hidden = true; }, 2800); }
+
+/* ---------- EXIF (date, settings, GPS) ---------- */
+function parseExif(buf) {
+  try {
+    const v = new DataView(buf);
+    if (v.byteLength < 4 || v.getUint16(0) !== 0xFFD8) return null;
+    let o = 2;
+    while (o + 4 <= v.byteLength) {
+      if (v.getUint8(o) !== 0xFF) return null;
+      const mk = v.getUint8(o + 1);
+      if (mk === 0xDA || mk === 0xD9) return null;
+      const len = v.getUint16(o + 2);
+      if (mk === 0xE1 && o + 10 <= v.byteLength && v.getUint32(o + 4) === 0x45786966 && v.getUint16(o + 8) === 0) return readTiff(v, o + 10);
+      o += 2 + len;
+    }
+  } catch (e) {}
+  return null;
+}
+function readTiff(v, t) {
+  const le = v.getUint16(t) === 0x4949;
+  const U16 = o => v.getUint16(o, le), U32 = o => v.getUint32(o, le), S32 = o => v.getInt32(o, le);
+  const SZ = { 1: 1, 2: 1, 3: 2, 4: 4, 5: 8, 7: 1, 9: 4, 10: 8, 11: 4, 12: 8 };
+  const ifd = rel => {
+    const out = {}; const base = t + rel;
+    if (!rel || base + 2 > v.byteLength) return out;
+    const n = U16(base);
+    for (let i = 0; i < n; i++) {
+      const e = base + 2 + i * 12; if (e + 12 > v.byteLength) break;
+      const tag = U16(e), type = U16(e + 2), cnt = U32(e + 4);
+      const size = (SZ[type] || 0) * cnt; if (!size) continue;
+      const vo = size > 4 ? t + U32(e + 8) : e + 8;
+      if (vo + Math.min(size, 64) > v.byteLength) continue;
+      try {
+        if (type === 2) { let s = ''; for (let k = 0; k < Math.min(cnt, 64); k++) { const ch = v.getUint8(vo + k); if (!ch) break; s += String.fromCharCode(ch); } out[tag] = s.trim(); }
+        else if (type === 3) out[tag] = cnt === 1 ? U16(vo) : Array.from({ length: Math.min(cnt, 8) }, (_, k) => U16(vo + k * 2));
+        else if (type === 4) out[tag] = cnt === 1 ? U32(vo) : Array.from({ length: Math.min(cnt, 8) }, (_, k) => U32(vo + k * 4));
+        else if (type === 9) out[tag] = S32(vo);
+        else if (type === 11) out[tag] = v.getFloat32(vo, le);
+        else if (type === 12) out[tag] = v.getFloat64(vo, le);
+        else if (type === 5 || type === 10) { const R = type === 5 ? U32 : S32; const arr = []; for (let k = 0; k < Math.min(cnt, 8); k++) { const a = R(vo + k * 8), b = R(vo + k * 8 + 4); arr.push(b ? a / b : 0); } out[tag] = cnt === 1 ? arr[0] : arr; }
+      } catch (err) {}
+    }
+    return out;
+  };
+  const z = ifd(U32(t + 4));
+  const ex = z[0x8769] ? ifd(z[0x8769]) : {};
+  const gp = z[0x8825] ? ifd(z[0x8825]) : {};
+  const r = {};
+  if (z[0x0110]) r.model = z[0x0110];
+  if (ex[0xA434]) r.lens = ex[0xA434];
+  if (ex[0x829D]) r.f = ex[0x829D];
+  if (ex[0x829A]) r.ss = ex[0x829A];
+  const iso = ex[0x8827]; if (iso) r.iso = Array.isArray(iso) ? iso[0] : iso;
+  if (ex[0x920A]) r.fl = ex[0x920A];
+  const dt = ex[0x9003] || z[0x0132];
+  if (typeof dt === 'string' && /^\d{4}:\d{2}:\d{2}/.test(dt)) r.date = dt.slice(0, 10).replace(/:/g, '-');
+  const dms = a => Array.isArray(a) && a.length >= 3 ? a[0] + a[1] / 60 + a[2] / 3600 : NaN;
+  const la = dms(gp[2]), lo = dms(gp[4]);
+  if (Number.isFinite(la) && Number.isFinite(lo) && (la || lo)) { r.lat = gp[1] === 'S' ? -la : la; r.lng = gp[3] === 'W' ? -lo : lo; }
+  return r;
+}
+function cleanExif(x) {
+  if (!x) return null;
+  const o = {};
+  for (const k of ['model', 'lens', 'f', 'ss', 'iso', 'fl', 'date', 'lat', 'lng']) {
+    const v = x[k];
+    if (typeof v === 'string' && v) o[k] = v.slice(0, 80);
+    else if (typeof v === 'number' && Number.isFinite(v)) o[k] = v;
+  }
+  return Object.keys(o).length ? o : null;
+}
+
+/* ---------- image resize ---------- */
+function loadImg(file) { return new Promise((res, rej) => { const u = URL.createObjectURL(file); const im = new Image(); im.onload = () => res(im); im.onerror = () => rej({ code: 'decode' }); im.src = u; }); }
+function encode(src, w, h, max, q) {
+  const k = Math.min(1, max / Math.max(w, h));
+  const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w * k)); c.height = Math.max(1, Math.round(h * k));
+  const ctx = c.getContext('2d'); ctx.imageSmoothingQuality = 'high'; ctx.drawImage(src, 0, 0, c.width, c.height);
+  return new Promise((res, rej) => c.toBlob(b => b ? res(b) : rej({ code: 'decode' }), 'image/jpeg', q));
+}
+async function resizeImage(file) {
+  let src, w, h, done = () => {};
+  try { src = await createImageBitmap(file, { imageOrientation: 'from-image' }); w = src.width; h = src.height; done = () => { try { src.close(); } catch (e) {} }; }
+  catch (e) { src = await loadImg(file); w = src.naturalWidth; h = src.naturalHeight; }
+  const full = await encode(src, w, h, 1800, 0.85);
+  const small = await encode(src, w, h, 520, 0.8);
+  done();
+  return { full, small, w, h };
+}
+
+/* ---------- store: IndexedDB on this device ---------- */
+const URLS = new Map(), MEM = new Map();
+const VIEW_SHEETS = ['comp', 'photo', 'spot', 'data'];
+function reqP(r) { return new Promise((res, rej) => { r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); }); }
+function openDB() {
+  return new Promise((res, rej) => {
+    let r; try { r = indexedDB.open('kouzu-zukan', 1); } catch (e) { rej(e); return; }
+    r.onupgradeneeded = () => { const d = r.result; if (!d.objectStoreNames.contains('items')) d.createObjectStore('items', { keyPath: 'id' }); if (!d.objectStoreNames.contains('blobs')) d.createObjectStore('blobs'); };
+    r.onsuccess = () => res(r.result); r.onerror = () => rej(r.error); r.onblocked = () => rej(new Error('blocked'));
+  });
+}
+function idbWrite(store, fn) {
+  return new Promise((res, rej) => {
+    const t = S.idb.transaction(store, 'readwrite'); fn(t.objectStore(store));
+    t.oncomplete = () => res(); t.onerror = () => rej(t.error); t.onabort = () => rej(t.error || new Error('abort'));
+  });
+}
+async function blobPut(key, blob) { if (S.idb) await idbWrite('blobs', st => st.put(blob, key)); else MEM.set(key, blob); if (!URLS.has(key)) URLS.set(key, URL.createObjectURL(blob)); }
+async function blobGet(key) { if (!key) return null; if (S.idb) return reqP(S.idb.transaction('blobs', 'readonly').objectStore('blobs').get(key)); return MEM.get(key) || null; }
+async function blobDel(key) {
+  if (!key) return;
+  try { if (S.idb) await idbWrite('blobs', st => st.delete(key)); else MEM.delete(key); } catch (e) {}
+  const u = URLS.get(key); if (u) { URL.revokeObjectURL(u); URLS.delete(key); }
+}
+async function loadUrl(key) {
+  if (!key) return null; if (URLS.has(key)) return URLS.get(key);
+  try { const b = await blobGet(key); if (!b) return null; const u = URL.createObjectURL(b); URLS.set(key, u); return u; } catch (e) { return null; }
+}
+function imgUrl(p, thumb) { const k = thumb ? (p.thumb || p.img) : p.img; return (k && URLS.get(k)) || null; }
+function sortAll() {
+  S.photos.sort((a, b) => (b.date || '').localeCompare(a.date || '') || (b.createdAt || 0) - (a.createdAt || 0));
+  S.spots.sort((a, b) => (a.createdAt || 0) - (b.createdAt || 0));
+  S.challenges.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+}
+function listFor(kind) { return kind === 'photo' ? S.photos : kind === 'spot' ? S.spots : S.challenges; }
+function memPut(obj) { const arr = listFor(obj.kind); const i = arr.findIndex(x => x.id === obj.id); if (i >= 0) arr[i] = obj; else arr.push(obj); }
+async function put(obj, quiet) {
+  if (S.idb) await idbWrite('items', st => st.put(obj));
+  memPut(obj);
+  if (!quiet) { sortAll(); afterChange(); askPersist(); }
+}
+async function remove(obj) {
+  if (S.idb) await idbWrite('items', st => st.delete(obj.id));
+  const arr = listFor(obj.kind); const i = arr.findIndex(x => x.id === obj.id); if (i >= 0) arr.splice(i, 1);
+  afterChange();
+}
+function afterChange() { render(); if (S.sheet && VIEW_SHEETS.includes(S.sheet.type)) renderSheet(true); }
+async function askPersist() {
+  if (S.persistAsked || !S.idb) return; S.persistAsked = true;
+  try { if (navigator.storage && navigator.storage.persist && !(await navigator.storage.persisted())) S.persisted = await navigator.storage.persist(); } catch (e) {}
+}
+async function boot() {
+  try {
+    if (!('indexedDB' in window)) throw new Error('no indexedDB');
+    S.idb = await openDB();
+    const items = await reqP(S.idb.transaction('items', 'readonly').objectStore('items').getAll());
+    for (const o of items) if (o && ['photo', 'spot', 'challenge'].includes(o.kind)) memPut(o);
+    sortAll();
+    await Promise.all(S.photos.map(p => loadUrl(p.thumb || p.img)));
+    S.mode = 'device'; S.sync = 'ok';
+    try { if (navigator.storage && navigator.storage.persisted) S.persisted = await navigator.storage.persisted(); } catch (e) {}
+  } catch (e) { S.idb = null; S.mode = 'memory'; S.sync = 'local'; $('#banner').hidden = false; }
+  render();
+}
+
+/* ---------- backup ---------- */
+function blobToDataURL(b) { return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = () => rej(r.error); r.readAsDataURL(b); }); }
+function download(file) { const u = URL.createObjectURL(file); const a = document.createElement('a'); a.href = u; a.download = file.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 5000); }
+async function exportBackup(btn) {
+  if (btn.disabled) return;
+  btn.disabled = true; btn.textContent = '書き出し中…';
+  try {
+    const blobs = {};
+    for (const p of S.photos) for (const k of [p.img, p.thumb]) { if (!k || blobs[k]) continue; const b = await blobGet(k); if (b) blobs[k] = await blobToDataURL(b); }
+    const data = { app: 'kouzu-zukan', version: 1, exportedAt: new Date().toISOString(), items: [...S.photos, ...S.spots, ...S.challenges], blobs };
+    const name = 'kouzu-zukan-backup-' + today() + '.json';
+    const file = new File([JSON.stringify(data)], name, { type: 'application/json' });
+    let shared = false;
+    if (matchMedia('(pointer: coarse)').matches && navigator.canShare && navigator.canShare({ files: [file] })) {
+      try { await navigator.share({ files: [file], title: name }); shared = true; }
+      catch (e) { if (e && e.name === 'AbortError') shared = true; }
+    }
+    if (!shared) download(file);
+    toast('バックアップを書き出しました');
+  } catch (e) { toast('書き出せませんでした。もう一度お試しください'); }
+  if (btn.isConnected) { btn.disabled = false; btn.textContent = 'バックアップを書き出す'; }
+}
+async function importBackup(file) {
+  try {
+    const data = JSON.parse(await file.text());
+    if (!data || data.app !== 'kouzu-zukan' || !Array.isArray(data.items)) throw { code: 'badbackup' };
+    toast('読み込んでいます…');
+    for (const [k, du] of Object.entries(data.blobs || {})) {
+      if (typeof du !== 'string' || !du.startsWith('data:image/')) continue;
+      const b = await (await fetch(du)).blob(); await blobPut(k, b);
+    }
+    let n = 0;
+    for (const it of data.items) { if (it && typeof it.id === 'string' && ['photo', 'spot', 'challenge'].includes(it.kind)) { await put(it, true); n++; } }
+    sortAll(); await Promise.all(S.photos.map(p => loadUrl(p.thumb || p.img)));
+    afterChange(); askPersist();
+    toast(n + '件を読み込みました');
+  } catch (e) { toast(e && e.code === 'badbackup' ? errMsg(e) : 'バックアップを読み込めませんでした'); }
+}
+function fillUsage() {
+  const el = $('#usage'); if (!el) return;
+  if (!(navigator.storage && navigator.storage.estimate)) { el.textContent = '—'; return; }
+  navigator.storage.estimate().then(e => { const x = $('#usage'); if (x) x.textContent = (e.usage / 1048576).toFixed(1) + ' MB'; }).catch(() => { const x = $('#usage'); if (x) x.textContent = '—'; });
+}
+function sheetData() {
+  const withImg = S.photos.filter(p => p.img).length;
+  return `${head('データの保存', 'Storage')}
+  <div class="sbody">
+    <p>${S.mode === 'device' ? '写真と記録は、この端末のブラウザの中だけに保存されています。どこにも送信されません。' : 'この画面では保存ができません。記録は画面を閉じると消えます。'}</p>
+    <dl class="facts">
+      <div><dt>記録</dt><dd>${S.photos.length}件（写真 ${withImg}枚）</dd></div>
+      <div><dt>ロケ地</dt><dd>${S.spots.length}か所</dd></div>
+      <div><dt>お題</dt><dd>${S.challenges.length}件</dd></div>
+      <div><dt>使用量</dt><dd class="mono" id="usage">計算中…</dd></div>
+      <div><dt>保護</dt><dd>${S.persisted ? 'オン（ブラウザが自動で消さない設定）' : '標準（ホーム画面に追加して使うと消えにくくなります）'}</dd></div>
+    </dl>
+    <h3>バックアップ</h3>
+    <p class="hint">機種変更やブラウザのデータ削除に備えて、ときどき書き出しておくと安心です。写真もまとめて1つのファイルになります。</p>
+    <div class="form-act"><button class="btn primary" data-act="export">バックアップを書き出す</button><label class="btn" for="impFile">バックアップから戻す</label><input type="file" id="impFile" class="vh" accept="application/json,.json"></div>
+    <p class="hint" style="margin-top:10px">戻すときは、今のデータに追加します。同じ記録は上書きされます。</p>
+  </div>`;
+}
+
+/* ---------- render: header ---------- */
+function derive() {
+  const m = new Map();
+  for (const p of S.photos) for (const cid of (p.compIds || [])) { if (!CMAP[cid]) continue; if (!m.has(cid)) m.set(cid, []); m.get(cid).push(p); }
+  S.shot = m;
+}
+function renderHeader() {
+  const n = S.shot.size;
+  $('#shotN').textContent = pad2(n);
+  $('#strip').innerHTML = COMPS.map(c => `<i class="${S.shot.has(c.id) ? 'on' : ''}"></i>`).join('');
+  const act = S.challenges.filter(x => x.status === 'active').length;
+  $('#meta').textContent = S.mode === 'loading' ? '記録を読み込んでいます' : `コンプ率 ${Math.round(n / TOTAL * 100)}% · 記録 ${S.photos.length}件 · ロケ地 ${S.spots.length}か所 · 挑戦中 ${act}`;
+  const sy = $('#sync');
+  const map = { connect: ['', '読み込み中'], ok: ['ok', '端末に保存'], local: ['local', '保存オフ'] };
+  const [cls, txt] = map[S.sync] || map.connect;
+  sy.className = 'sync ' + cls; sy.textContent = txt;
+}
+function render() { derive(); renderHeader(); renderPanel(); }
+function renderPanel() { if (S.tab === 'zukan') renderZukan(); else if (S.tab === 'gacha') renderGacha(); else renderSpots(); }
+function setTab(t) {
+  S.tab = t;
+  for (const k of ['zukan', 'gacha', 'spots']) $('#p-' + k).hidden = k !== t;
+  document.querySelectorAll('.tab').forEach(b => b.setAttribute('aria-current', b.dataset.v === t ? 'page' : 'false'));
+  render();
+  window.scrollTo(0, 0);
+}
+
+/* ---------- render: zukan ---------- */
+const chip = (act, v, label, on) => `<button class="chip" data-act="${act}" data-v="${v}" aria-pressed="${on}">${esc(label)}</button>`;
+function frameCell(c) {
+  const ps = S.shot.get(c.id) || [];
+  const withImg = ps.find(p => imgUrl(p, true));
+  const pic = withImg ? `<img src="${esc(imgUrl(withImg, true))}" alt="" loading="lazy">` : guide(c);
+  return `<li class="cell"><button class="frame" data-act="comp" data-id="${c.id}" aria-label="${esc(c.name)}${ps.length ? '（撮影済み）' : ''}">
+    <span class="spr"></span><span class="pic">${pic}</span>
+    <span class="ep"><span>▸${pad2(c.no)}</span><span>${pad2(c.no)}A</span></span>${ps.length ? BOX : ''}</button>
+    <div class="cap"><b>${esc(c.name)}</b><small>${ps.length ? `<em>${ps.length}件</em> ` : ''}${stars(c.lv)}</small></div></li>`;
+}
+function renderZukan() {
+  const cats = S.cat === 'all' ? CATS : CATS.filter(c => c.k === S.cat);
+  let h = `<div class="toolbar"><div class="chips" role="group" aria-label="カテゴリ">${chip('cat', 'all', 'すべて', S.cat === 'all')}${CATS.map(c => chip('cat', c.k, c.n, S.cat === c.k)).join('')}<button class="chip" data-act="missing" aria-pressed="${S.onlyMissing}">未撮影だけ</button></div>
+    <button class="btn primary sm" data-act="add-photo-free">＋ 写真を記録</button></div>
+    <p class="note">写真か記録を登録すると、その構図に赤いセレクト枠が付きます。33コマすべてに枠が付いたらコンプリートです。</p>`;
+  for (const cat of cats) {
+    const items = COMPS.filter(c => c.cat === cat.k);
+    const done = items.filter(c => S.shot.has(c.id)).length;
+    const vis = items.filter(c => !S.onlyMissing || !S.shot.has(c.id));
+    h += `<section class="cat"><h2 class="cat-h">${cat.n}<small>${done} / ${items.length}</small></h2>`;
+    h += vis.length ? `<ul class="contact">${vis.map(frameCell).join('')}</ul>` : `<p class="empty-line">このカテゴリはすべて撮影済みです。</p>`;
+    h += `</section>`;
+  }
+  $('#p-zukan').innerHTML = h;
+}
+
+/* ---------- render: gacha ---------- */
+function draw(animate) {
+  const g = S.g;
+  let pool = COMPS.filter(c => !g.lv || c.lv === g.lv);
+  if (!pool.length) pool = COMPS;
+  const prev = g.cur && g.cur.compId;
+  const c = wpick(pool, pool.map(x => (g.prefer && !S.shot.has(x.id) ? 4 : 1) * (x.id === prev ? 0.15 : 1)));
+  let spotId = '';
+  if (g.forceSpot && spotById(g.forceSpot)) spotId = g.forceSpot;
+  else if (g.spot && S.spots.length) spotId = wpick(S.spots, S.spots.map(s => inSeason(s) ? 3 : 1)).id;
+  g.forceSpot = null;
+  g.cur = { compId: c.id, rule: g.rules ? pick(RULES) : '', count: pick(COUNTS), spotId, accepted: false };
+  g.n = (g.n || 0) + 1; savePrefs();
+  if (S.tab === 'gacha') {
+    renderGacha();
+    if (animate && !matchMedia('(prefers-reduced-motion: reduce)').matches) { const el = $('#gacha'); el.classList.remove('snap'); void el.offsetWidth; el.classList.add('snap'); }
+  }
+}
+function tgl(key, label, disabled) { return `<button class="tgl" data-act="gopt" data-v="${key}" aria-pressed="${!!S.g[key]}" ${disabled ? 'disabled' : ''}>${label}</button>`; }
+function renderGacha() {
+  const g = S.g; const cur = g.cur; const c = CMAP[cur.compId];
+  const sp = cur.spotId ? spotById(cur.spotId) : null;
+  const shot = S.shot.has(c.id);
+  const act = S.challenges.filter(x => x.status === 'active');
+  const past = S.challenges.filter(x => x.status !== 'active');
+  const doneN = past.filter(x => x.status === 'done').length;
+  const lvs = [[0, 'すべて'], [1, '★'], [2, '★★'], [3, '★★★']];
+  $('#p-gacha').innerHTML = `
+  <div class="gacha" id="gacha">
+    <div class="g-frame"><div class="frame${shot ? '' : ''}"><span class="spr"></span><span class="pic">${guide(c)}<span class="curtain"></span></span><span class="ep"><span>▸${pad2(g.n)}</span><span>${pad2(g.n)}A · ${RAR[c.lv]}</span></span>${shot ? BOX : ''}</div></div>
+    <div class="g-shut"><button class="shutter" data-act="draw" aria-label="お題を引く">引く</button></div>
+    <div class="g-opts">
+      ${tgl('prefer', '未撮影を優先')}${tgl('rules', '縛りをつける')}${tgl('spot', S.spots.length ? 'ロケ地も引く' : 'ロケ地も引く（未登録）', !S.spots.length)}
+      <div class="seg" role="group" aria-label="難易度">${lvs.map(([v, l]) => `<button data-act="glv" data-v="${v}" aria-pressed="${g.lv === v}">${l}</button>`).join('')}</div>
+    </div>
+    <div class="g-text">
+      <p class="eyebrow"><span>お題 No.${pad2(g.n)}</span><span class="rar r${c.lv}">${RAR[c.lv]} ${stars(c.lv)}</span><span>${shot ? '撮影済み' : '未撮影'}</span></p>
+      <h2 class="g-name">${esc(c.name)}</h2>
+      <p class="g-count">で <b>${esc(cur.count)}</b></p>
+      ${cur.rule || sp ? `<dl class="g-meta">${cur.rule ? `<div><dt>縛り</dt><dd>${esc(cur.rule)}</dd></div>` : ''}${sp ? `<div><dt>ロケ地</dt><dd>${esc(sp.name)}${inSeason(sp) ? '<span class="tag">今月が旬</span>' : ''}</dd></div>` : ''}</dl>` : ''}
+      <p class="g-tip">${esc(c.tip)}</p>
+      <div class="row"><button class="btn accent" data-act="accept" ${cur.accepted ? 'disabled' : ''}>${cur.accepted ? '挑戦中に追加済み' : 'このお題に挑戦'}</button><button class="btn" data-act="comp" data-id="${c.id}">構図の説明</button></div>
+    </div>
+  </div>
+  <section class="chal"><h2 class="sec-h">挑戦中<small>${act.length}件</small></h2>
+    ${act.length ? `<ul class="ch-list">${act.map(chalItem).join('')}</ul>` : `<p class="note">お題を引いて「このお題に挑戦」を押すと、ここに並びます。撮れたら「記録して達成」で写真を登録します。</p>`}
+  </section>
+  ${past.length ? `<section class="hist"><h2 class="sec-h">これまでの記録<small>達成 ${doneN} · 見送り ${past.length - doneN}</small></h2><ul class="hist-list">${past.slice(0, 30).map(histItem).join('')}</ul></section>` : ''}`;
+}
+function chalItem(x) {
+  const c = CMAP[x.compId]; if (!c) return '';
+  const sp = x.spotId ? spotById(x.spotId) : null;
+  const sub = [x.rule ? '縛り：' + x.rule : '', sp ? 'ロケ地：' + sp.name : '', fmtTs(x.createdAt) + 'に引いたお題'].filter(Boolean).join(' · ');
+  return `<li class="ch-item"><button class="mini" data-act="comp" data-id="${c.id}" aria-label="${esc(c.name)}の説明">${guide(c)}</button>
+    <div class="ch-body"><p class="ch-title"><b>${esc(c.name)}</b> で ${esc(x.count || '')}</p><p class="ch-sub">${esc(sub)}</p>
+    <div class="ch-act"><button class="btn sm accent" data-act="ch-record" data-id="${x.id}">記録して達成</button><button class="btn sm ghost" data-act="ch-skip" data-id="${x.id}">見送る</button></div></div></li>`;
+}
+function histItem(x) {
+  const c = CMAP[x.compId]; if (!c) return '';
+  const done = x.status === 'done';
+  const photo = done && x.photoId && S.photos.find(p => p.id === x.photoId);
+  return `<li><span class="pill ${done ? 'done' : 'skip'}">${done ? '達成' : '見送り'}</span>${photo ? `<button class="link" data-act="photo" data-id="${photo.id}">${esc(c.name)}</button>` : `<span>${esc(c.name)}</span>`}<span class="muted">${esc(x.count || '')}${x.rule ? ' · ' + esc(x.rule) : ''}</span><span class="d">${fmtTs(x.doneAt || x.createdAt)}</span></li>`;
+}
+async function accept() {
+  const cur = S.g.cur; if (!cur || cur.accepted) return;
+  if (S.mode === 'loading') { toast('接続中です。数秒待ってからもう一度押してください'); return; }
+  try {
+    cur.accepted = true;
+    await put({ id: newId('c'), kind: 'challenge', compId: cur.compId, rule: cur.rule || '', count: cur.count, spotId: cur.spotId || '', status: 'active', createdAt: Date.now() });
+    toast('挑戦中に追加しました');
+    if (S.tab === 'gacha') renderGacha();
+  } catch (e) { cur.accepted = false; toast(errMsg(e)); renderGacha(); }
+}
+async function compChallenge(id) {
+  if (S.mode === 'loading') { toast('接続中です。数秒待ってからもう一度押してください'); return; }
+  try { await put({ id: newId('c'), kind: 'challenge', compId: id, rule: '', count: '3枚', spotId: '', status: 'active', createdAt: Date.now() }); toast('「お題ガチャ」の挑戦中に追加しました'); }
+  catch (e) { toast(errMsg(e)); }
+}
+async function skipChallenge(id) {
+  const x = S.challenges.find(c => c.id === id); if (!x) return;
+  try { await put(Object.assign({}, x, { status: 'skipped', doneAt: Date.now() })); toast('見送りにしました'); } catch (e) { toast(errMsg(e)); }
+}
+
+/* ---------- render: spots ---------- */
+function monthStrip(months, labels) {
+  const set = new Set(months || []);
+  const names = [...set].sort((a, b) => a - b).map(m => m + '月').join('・');
+  return `<span class="months${labels ? ' lab' : ''}" role="img" aria-label="ベストの月：${names || '未設定'}">${Array.from({ length: 12 }, (_, i) => `<i class="${set.has(i + 1) ? 'on' : ''} ${i + 1 === MONTH ? 'cur' : ''}">${labels ? i + 1 : ''}</i>`).join('')}</span>`;
+}
+function spotRow(s, i) {
+  const n = S.photos.filter(p => p.spotId === s.id).length;
+  const sub = [s.area, n ? '記録' + n + '件' : '', hasXY(s) ? '' : '座標なし'].filter(Boolean).join(' · ');
+  return `<li><button class="spot-row" data-act="spot" data-id="${s.id}"><span class="pin-no">${i + 1}</span>
+    <span class="sr-main"><b>${esc(s.name)}</b>${sub ? `<small>${esc(sub)}</small>` : ''}${monthStrip(s.months)}</span>
+    ${inSeason(s) ? '<span class="tag">今月</span>' : '<span></span>'}</button></li>`;
+}
+function renderSpots() {
+  const hot = S.spots.filter(inSeason);
+  $('#p-spots').innerHTML = `
+    <div class="toolbar"><h2 class="sec-h">ロケ地マップ<small>${S.spots.length}か所</small></h2><button class="btn primary sm" data-act="add-spot">＋ ロケ地を追加</button></div>
+    <div class="hot"><span class="hot-l">${MONTH}月の狙い目</span>${hot.length ? hot.map(s => `<button class="chip" data-act="spot" data-id="${s.id}">${esc(s.name)}</button>`).join('') : '<span class="muted">今月がベストのロケ地はまだありません</span>'}</div>
+    <div class="map" id="map"></div>
+    ${S.spots.length ? `<ol class="spot-list">${S.spots.map(spotRow).join('')}</ol>` : `<div class="empty"><p><b>ロケ地はまだありません。</b></p><p>「＋ ロケ地を追加」から名前と座標を登録すると、地図にピンが立ちます。その場所にいるときは「現在地」ボタンで、離れた場所はGoogleマップで長押しして表示される数字を貼り付けて入れられます。GPS付きの写真を記録したときも、その位置からロケ地を作れます。</p></div>`}`;
+  renderMap();
+}
+function renderMap() {
+  const el = $('#map'); if (!el) return;
+  const W = Math.round(Math.max(300, Math.min(el.clientWidth || 360, 1080)));
+  const H = Math.round(W < 560 ? W * 0.78 : W * 0.5);
+  const pts = S.spots.map((s, i) => ({ s, i })).filter(o => hasXY(o.s));
+  let la0, la1, lo0, lo1;
+  if (pts.length) {
+    la0 = Math.min(...pts.map(o => o.s.lat)); la1 = Math.max(...pts.map(o => o.s.lat));
+    lo0 = Math.min(...pts.map(o => o.s.lng)); lo1 = Math.max(...pts.map(o => o.s.lng));
+    const pl = Math.max(0.03, (la1 - la0) * 0.2), pg = Math.max(0.04, (lo1 - lo0) * 0.2);
+    la0 -= pl; la1 += pl; lo0 -= pg; lo1 += pg;
+  } else { la0 = 40.10; la1 = 40.50; lo0 = 140.30; lo1 = 140.95; }
+  const cy = (la0 + la1) / 2, cx = (lo0 + lo1) / 2, kx = Math.cos(cy * Math.PI / 180), m = 28;
+  const sc = Math.min((W - 2 * m) / ((lo1 - lo0) * kx), (H - 2 * m) / (la1 - la0));
+  const X = g => Math.round((W / 2 + (g - cx) * kx * sc) * 10) / 10;
+  const Y = a => Math.round((H / 2 - (a - cy) * sc) * 10) / 10;
+  const vla0 = cy - (H / 2) / sc, vla1 = cy + (H / 2) / sc, vlo0 = cx - (W / 2) / (kx * sc), vlo1 = cx + (W / 2) / (kx * sc);
+  const steps = [0.005, 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1];
+  const sa = steps.find(s => (vla1 - vla0) / s <= 6) || 1, so = steps.find(s => (vlo1 - vlo0) / s <= 6) || 1;
+  const dec = s => s < 0.01 ? 3 : s < 0.1 ? 2 : 1;
+  let g = '';
+  for (let k = Math.ceil(vla0 / sa); k * sa <= vla1; k++) { const a = k * sa, y = Y(a); if (y < 14 || y > H - 18) continue; g += `<line class="gr" x1="0" y1="${y}" x2="${W}" y2="${y}"/><text class="gl" x="6" y="${y - 4}">${a.toFixed(dec(sa))}°N</text>`; }
+  for (let k = Math.ceil(vlo0 / so); k * so <= vlo1; k++) { const o = k * so, x = X(o); if (x < 50 || x > W - 10) continue; g += `<line class="gr" x1="${x}" y1="0" x2="${x}" y2="${H}"/><text class="gl" x="${x + 4}" y="${H - 6}">${o.toFixed(dec(so))}°E</text>`; }
+  let towns = '';
+  for (const [n, a, o] of TOWNS) { if (a < vla0 || a > vla1 || o < vlo0 || o > vlo1) continue; const x = X(o), y = Y(a); towns += `<g class="town"><path d="M${x - 3.5} ${y}h7M${x} ${y - 3.5}v7"/><text x="${x + 7}" y="${y + 4}">${n}</text></g>`; }
+  let pins = '';
+  const label = pts.length <= 14;
+  for (const { s, i } of pts) {
+    const x = X(s.lng), y = Y(s.lat), hot = inSeason(s);
+    const nm = s.name.length > 10 ? s.name.slice(0, 10) + '…' : s.name;
+    pins += `<g class="pin" data-act="spot" data-id="${s.id}" role="button" tabindex="0" aria-label="${esc(s.name)}">${hot ? `<circle class="ring" cx="${x}" cy="${y}" r="15.5"/>` : ''}<circle class="dot" cx="${x}" cy="${y}" r="11"/><text class="pn" x="${x}" y="${y + 4}" text-anchor="middle">${i + 1}</text>${label ? `<text class="pl" x="${x + 16}" y="${y + 4}">${esc(nm)}</text>` : ''}</g>`;
+  }
+  const ghost = pts.length ? '' : `<text class="ghost" x="${W / 2}" y="${H / 2 + 34}" text-anchor="middle">ロケ地を登録するとピンが立ちます</text>`;
+  el.innerHTML = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="ロケ地の位置関係">${g}${towns}${pins}${ghost}</svg><p class="map-note">位置関係の目安です（地形は描いていません）。点線の輪は今月がベストのロケ地。正確な場所は各ロケ地の「Googleマップで開く」から。</p>`;
+}
+
+/* ---------- sheets ---------- */
+function head(title, eyebrow) {
+  return `<div class="sh-head">${S.stack.length ? `<button class="icon-btn" data-act="back" aria-label="戻る">${ICON_BACK}</button>` : ''}<div class="sh-t"><p class="eyebrow">${eyebrow}</p><h2>${title}</h2></div><button class="icon-btn" data-act="close" aria-label="閉じる">${ICON_X}</button></div>`;
+}
+function openSheet(s) {
+  if (S.sheet) { S.stack.push(S.sheet); if (S.stack.length > 12) S.stack.shift(); }
+  else S.lastFocus = document.activeElement;
+  S.sheet = s; renderSheet(false);
+  $('#sheetWrap').hidden = false; document.body.classList.add('lock');
+  requestAnimationFrame(() => $('#sheet').focus());
+}
+function closeSheet() {
+  S.sheet = null; S.stack = []; S.form = null; S.ov = null;
+  $('#sheetWrap').hidden = true; document.body.classList.remove('lock');
+  if (S.lastFocus && S.lastFocus.isConnected) S.lastFocus.focus();
+}
+function goBack() {
+  if (S.stack.length) { S.sheet = S.stack.pop(); S.form = null; S.ov = null; renderSheet(false); }
+  else closeSheet();
+}
+function renderSheet(keep) {
+  const el = $('#sheet'); const s = S.sheet; if (!s) return;
+  const top = el.scrollTop;
+  let h = null;
+  if (s.type === 'comp') h = sheetComp(s.id);
+  else if (s.type === 'photo') h = sheetPhoto(s.id);
+  else if (s.type === 'spot') h = sheetSpot(s.id);
+  else if (s.type === 'fphoto') h = formPhoto();
+  else if (s.type === 'fspot') h = formSpot();
+  else if (s.type === 'data') h = sheetData();
+  if (h == null) { if (S.stack.length) { S.sheet = S.stack.pop(); renderSheet(false); } else closeSheet(); return; }
+  el.innerHTML = h;
+  el.scrollTop = keep ? top : 0;
+  if (s.type === 'data') fillUsage();
+}
+function thumbs(ps) {
+  if (!ps.length) return '<p class="muted">まだありません</p>';
+  return `<ul class="thumbs">${ps.map(p => { const u = imgUrl(p, true); return `<li><button class="tframe" data-act="photo" data-id="${p.id}">${u ? `<img src="${esc(u)}" alt="${esc(p.title || '')}" loading="lazy">` : '<span class="rec">記録のみ</span>'}<span class="tcap">${esc(p.title || fmtD(p.date) || '無題')}</span></button></li>`; }).join('')}</ul>`;
+}
+function sheetComp(id) {
+  const c = CMAP[id]; if (!c) return null;
+  const ps = S.shot.get(id) || [];
+  const cat = CATS.find(k => k.k === c.cat).n;
+  return `${head(esc(c.name), `No.${pad2(c.no)} · ${cat} · ${c.en}`)}
+  <div class="sbody">
+    <div class="frame hero-frame"><span class="spr"></span><span class="pic">${guide(c)}</span><span class="ep"><span>▸${pad2(c.no)}</span><span>${RAR[c.lv]} ${stars(c.lv)}</span></span>${ps.length ? BOX : ''}</div>
+    <p class="lead">${esc(c.desc)}</p>
+    <h3>撮り方のコツ</h3><p>${esc(c.tip)}</p>
+    <h3>こんな被写体で</h3><div class="chips">${c.ex.map(e => `<span class="chip static">${esc(e)}</span>`).join('')}</div>
+    <h3>この構図の写真 <small>${ps.length}件</small></h3>${thumbs(ps)}
+    <div class="form-act"><button class="btn primary" data-act="add-photo" data-id="${id}">この構図で記録する</button><button class="btn" data-act="comp-chal" data-id="${id}">お題にして挑戦</button></div>
+  </div>`;
+}
+function sheetPhoto(id) {
+  const p = S.photos.find(x => x.id === id); if (!p) return null;
+  const url = imgUrl(p, false) || imgUrl(p, true);
+  if (p.img && !URLS.has(p.img)) loadUrl(p.img).then(u => { if (u && S.sheet && S.sheet.type === 'photo' && S.sheet.id === id) renderSheet(true); });
+  const cs = (p.compIds || []).map(c => CMAP[c]).filter(Boolean);
+  const ov = S.ov ? cs.find(c => c.id === S.ov) : null;
+  const sp = p.spotId ? spotById(p.spotId) : null;
+  const xl = exifLine(p.exif);
+  return `${head(esc(p.title || cs.map(c => c.name).join('・') || '記録'), fmtD(p.date) || 'RECORD')}
+  <div class="sbody">
+    <div class="viewer">${url ? `<div class="ph"><img src="${esc(url)}" alt="${esc(p.title || '')}">${ov ? guide(ov, 'ov', true) : ''}</div>` : `<div class="ph ph-empty">${cs[0] ? guide(cs[0]) : ''}<span>写真なしの記録</span></div>`}</div>
+    ${url && cs.length ? `<div class="ovbar"><span>ガイドを重ねる</span><div class="chips">${cs.map(c => `<button class="chip" data-act="ov" data-id="${c.id}" aria-pressed="${S.ov === c.id}">${esc(c.name)}</button>`).join('')}</div></div>` : ''}
+    <dl class="facts">
+      <div><dt>構図</dt><dd>${cs.map(c => `<button class="link" data-act="comp" data-id="${c.id}">${esc(c.name)}</button>`).join('、') || '—'}</dd></div>
+      ${p.date ? `<div><dt>撮影日</dt><dd class="mono">${fmtD(p.date)}</dd></div>` : ''}
+      ${sp ? `<div><dt>ロケ地</dt><dd><button class="link" data-act="spot" data-id="${sp.id}">${esc(sp.name)}</button></dd></div>` : ''}
+      ${xl ? `<div><dt>設定</dt><dd class="mono">${esc(xl)}</dd></div>` : ''}
+    </dl>
+    ${p.memo ? `<p class="memo">${esc(p.memo)}</p>` : ''}
+    <div class="danger-row"><button class="btn ghost sm" data-act="edit-photo" data-id="${id}">編集</button><button class="btn ghost sm danger" data-act="del-photo" data-id="${id}">削除</button></div>
+  </div>`;
+}
+function sheetSpot(id) {
+  const s = spotById(id); if (!s) return null;
+  const idx = S.spots.indexOf(s) + 1;
+  const ps = S.photos.filter(p => p.spotId === id);
+  const q = hasXY(s) ? `${s.lat},${s.lng}` : '';
+  const comps = (s.compIds || []).filter(c => CMAP[c]);
+  return `${head(esc(s.name), `Spot ${pad2(idx)}${s.area ? ' · ' + esc(s.area) : ''}`)}
+  <div class="sbody">
+    ${q ? `<div class="coord"><code>${fmtLat(s.lat)} ${fmtLng(s.lng)}</code><button class="btn sm" data-act="copy" data-v="${q}">座標をコピー</button></div>
+      <div class="row" style="margin-top:10px"><a class="btn" href="https://www.google.com/maps/search/?api=1&amp;query=${q}" target="_blank" rel="noopener">Googleマップで開く</a><a class="btn" href="https://www.google.com/maps/dir/?api=1&amp;destination=${q}" target="_blank" rel="noopener">ルートを調べる</a></div>`
+      : '<p class="hint">座標が未登録です。「編集」から追加すると地図にピンが立ちます。</p>'}
+    <h3>ベストな月</h3>${monthStrip(s.months, true)}
+    ${(s.times || []).length ? `<h3>時間帯</h3><div class="chips">${s.times.map(t => `<span class="chip static">${esc(t)}</span>`).join('')}</div>` : ''}
+    ${comps.length ? `<h3>相性のいい構図</h3><div class="chips">${comps.map(c => `<button class="chip" data-act="comp" data-id="${c}">${esc(CMAP[c].name)}</button>`).join('')}</div>` : ''}
+    ${s.memo ? `<h3>メモ</h3><p class="memo" style="margin-top:0!important">${esc(s.memo)}</p>` : ''}
+    <h3>ここで撮った記録 <small>${ps.length}件</small></h3>${thumbs(ps)}
+    <div class="form-act"><button class="btn accent" data-act="spot-draw" data-id="${id}">ここでお題を引く</button><button class="btn" data-act="add-photo-spot" data-id="${id}">ここで記録する</button></div>
+    <div class="danger-row"><button class="btn ghost sm" data-act="edit-spot" data-id="${id}">編集</button><button class="btn ghost sm danger" data-act="del-spot" data-id="${id}">削除</button></div>
+  </div>`;
+}
+
+/* ---------- photo form ---------- */
+function newPhotoForm(o) {
+  S.form = { editId: null, file: null, preview: null, exif: null, compIds: new Set(o.compIds || []), title: '', date: today(), spotId: o.spotId || '', newSpotName: '', memo: '', challengeId: o.challengeId || null, gpsNote: '', busy: false };
+  openSheet({ type: 'fphoto' });
+}
+function editPhotoForm(p) {
+  S.form = { editId: p.id, file: null, preview: imgUrl(p, false) || imgUrl(p, true), exif: p.exif || null, compIds: new Set(p.compIds || []), title: p.title || '', date: p.date || '', spotId: p.spotId || '', newSpotName: '', memo: p.memo || '', challengeId: p.challengeId || null, gpsNote: '', busy: false };
+  openSheet({ type: 'fphoto' });
+}
+function formPhoto() {
+  const f = S.form; if (!f) return null;
+  const canImg = true;
+  const gps = f.exif && Number.isFinite(f.exif.lat);
+  const xl = f.exif ? exifLine(f.exif) : '';
+  return `${head(f.editId ? '記録を編集' : '写真を記録する', 'Record')}
+  <div class="form">
+    <div class="pick">
+      <div class="pick-pv">${f.preview ? `<img src="${esc(f.preview)}" alt="選んだ写真">` : '<span>写真なしでも記録できます</span>'}</div>
+      ${canImg ? `<label class="btn" for="f-file">${f.preview ? '写真を選び直す' : '写真を選ぶ'}</label><input type="file" id="f-file" class="vh" accept="image/*">` : '<p class="hint">この表示では写真を保存できません。構図の記録だけ残せます。</p>'}
+      ${f.file ? `<p class="exif-line">${xl ? esc(xl) : 'EXIF情報は見つかりませんでした'}</p>` : (canImg && !f.preview ? '<p class="hint">撮影日・設定・GPSがEXIFにあれば自動で入ります。</p>' : '')}
+      ${f.gpsNote ? `<p class="hint ok">${esc(f.gpsNote)}</p>` : ''}
+    </div>
+    <fieldset class="fs"><legend>構図 <small>複数選べます</small></legend>
+      ${CATS.map(cat => `<div class="fs-g"><span class="fs-l">${cat.n}</span><div class="chips">${COMPS.filter(c => c.cat === cat.k).map(c => `<button type="button" class="chip" data-act="fchip" data-k="compIds" data-v="${c.id}" aria-pressed="${f.compIds.has(c.id)}">${esc(c.name)}</button>`).join('')}</div></div>`).join('')}
+      <p class="err" id="e-comp" hidden>構図を1つ以上選んでください</p>
+    </fieldset>
+    <div class="grid2">
+      <label class="fld"><span>タイトル</span><input id="f-title" data-f="title" value="${esc(f.title)}" placeholder="例：朝霧の棚田" maxlength="60"></label>
+      <label class="fld"><span>撮影日</span><input id="f-date" type="date" data-f="date" value="${esc(f.date)}"></label>
+    </div>
+    <label class="fld"><span>ロケ地</span><select id="f-spot" data-f="spotId"><option value="">選ばない</option>${S.spots.map(s => `<option value="${s.id}" ${f.spotId === s.id ? 'selected' : ''}>${esc(s.name)}</option>`).join('')}${gps ? `<option value="__new" ${f.spotId === '__new' ? 'selected' : ''}>＋ 写真のGPS位置で新しく作る</option>` : ''}</select></label>
+    <label class="fld" id="newSpotFld" ${f.spotId === '__new' ? '' : 'hidden'}><span>新しいロケ地の名前</span><input id="f-newspot" data-f="newSpotName" value="${esc(f.newSpotName)}" placeholder="例：〇〇の棚田" maxlength="40"></label>
+    <label class="fld"><span>メモ</span><textarea id="f-memo" data-f="memo" rows="3" placeholder="光の向き、気づいたこと、次に試したいこと">${esc(f.memo)}</textarea></label>
+    <div class="form-act"><button class="btn primary wide" data-act="save-photo" id="saveBtn" ${f.busy ? 'disabled' : ''}>${f.editId ? '変更を保存' : '記録する'}</button></div>
+  </div>`;
+}
+async function onFile(file) {
+  const f = S.form; if (!f || !file) return;
+  f.file = file;
+  if (f.previewObj) URL.revokeObjectURL(f.previewObj);
+  f.preview = f.previewObj = URL.createObjectURL(file);
+  let x = null;
+  try { x = parseExif(await file.slice(0, 512 * 1024).arrayBuffer()); } catch (e) {}
+  f.exif = x || {};
+  if (f.exif.date) f.date = f.exif.date;
+  f.gpsNote = '';
+  if (Number.isFinite(f.exif.lat)) {
+    const near = nearestSpot(f.exif.lat, f.exif.lng);
+    if (near && near.d < 1.5) { f.spotId = near.s.id; f.gpsNote = `GPSから近くのロケ地「${near.s.name}」を選びました（約${near.d.toFixed(1)}km）`; }
+    else if (!f.spotId) { f.spotId = '__new'; f.gpsNote = 'GPSの位置があります。新しいロケ地として登録できます'; }
+  }
+  renderSheet(true);
+}
+async function savePhoto() {
+  const f = S.form; if (!f || f.busy) return;
+  if (S.mode === 'loading') { toast('接続中です。数秒待ってからもう一度押してください'); return; }
+  if (!f.compIds.size) { const e = $('#e-comp'); e.hidden = false; e.scrollIntoView({ block: 'center' }); return; }
+  if (f.spotId === '__new' && !f.newSpotName.trim()) { toast('新しいロケ地の名前を入れてください'); const i = $('#f-newspot'); if (i) i.focus(); return; }
+  const btn = $('#saveBtn');
+  f.busy = true; btn.disabled = true; btn.textContent = f.file ? '写真を保存中…' : '保存中…';
+  const before = new Set(S.shot.keys());
+  try {
+    const prev = f.editId ? S.photos.find(p => p.id === f.editId) : null;
+    const doc = prev ? Object.assign({}, prev) : { id: newId('p'), kind: 'photo', createdAt: Date.now() };
+    let oldAssets = [];
+    if (f.file) {
+      const r = await resizeImage(f.file);
+      const kf = newId('b'), kt = newId('b');
+      await blobPut(kf, r.full); await blobPut(kt, r.small);
+      if (prev) oldAssets = [prev.img, prev.thumb].filter(Boolean);
+      doc.img = kf; doc.thumb = kt;
+      doc.w = r.w; doc.h = r.h; doc.exif = cleanExif(f.exif);
+    }
+    let spotId = f.spotId;
+    if (spotId === '__new') {
+      const sp = { id: newId('s'), kind: 'spot', name: f.newSpotName.trim(), area: '', lat: +f.exif.lat.toFixed(6), lng: +f.exif.lng.toFixed(6), months: [], times: [], compIds: [...f.compIds], memo: '', createdAt: Date.now() };
+      await put(sp); spotId = sp.id;
+    }
+    Object.assign(doc, { compIds: [...f.compIds], title: f.title.trim(), date: f.date || '', spotId: spotId || '', memo: f.memo.trim(), challengeId: f.challengeId || '' });
+    await put(doc);
+    if (f.challengeId) { const ch = S.challenges.find(x => x.id === f.challengeId); if (ch && ch.status === 'active') await put(Object.assign({}, ch, { status: 'done', doneAt: Date.now(), photoId: doc.id })); }
+    oldAssets.forEach(k => blobDel(k));
+    const fresh = [...f.compIds].filter(id => !before.has(id));
+    goBack();
+    toast(fresh.length ? `「${CMAP[fresh[0]].name}」${fresh.length > 1 ? 'ほか' : ''}をセレクト。${before.size + fresh.length} / ${TOTAL}` : (f.challengeId ? 'お題を達成しました' : '記録しました'));
+  } catch (e) {
+    f.busy = false; btn.disabled = false; btn.textContent = f.editId ? '変更を保存' : '記録する';
+    toast(errMsg(e));
+  }
+}
+async function delPhoto(id) {
+  const p = S.photos.find(x => x.id === id); if (!p) return;
+  goBack();
+  try {
+    await remove(p);
+    [p.img, p.thumb].forEach(k => blobDel(k));
+    toast('削除しました');
+  } catch (e) { toast(errMsg(e)); }
+}
+
+/* ---------- spot form ---------- */
+function newSpotForm() { S.form = { editId: null, name: '', area: '', coord: '', months: new Set(), times: new Set(), compIds: new Set(), memo: '' }; openSheet({ type: 'fspot' }); }
+function editSpotForm(s) { S.form = { editId: s.id, name: s.name || '', area: s.area || '', coord: hasXY(s) ? `${s.lat}, ${s.lng}` : '', months: new Set(s.months || []), times: new Set(s.times || []), compIds: new Set(s.compIds || []), memo: s.memo || '' }; openSheet({ type: 'fspot' }); }
+function coordHint(t) { if (!t) return '空欄でも登録できます（地図には出ません）'; const c = parseCoord(t); return c ? `読み取り：${fmtLat(c.lat)} ${fmtLng(c.lng)}` : '座標を読み取れません。「40.2714, 140.5644」の形で入れてください'; }
+function formSpot() {
+  const f = S.form; if (!f) return null;
+  return `${head(f.editId ? 'ロケ地を編集' : 'ロケ地を追加', 'Spot')}
+  <div class="form">
+    <div class="grid2">
+      <label class="fld"><span>名前（必須）</span><input id="s-name" data-f="name" value="${esc(f.name)}" placeholder="例：〇〇の棚田" maxlength="40"><span class="err" id="e-name" hidden>名前を入れてください</span></label>
+      <label class="fld"><span>エリア</span><input id="s-area" data-f="area" value="${esc(f.area)}" placeholder="例：鹿角市" maxlength="30"></label>
+    </div>
+    <label class="fld"><span>座標</span><span class="coord-in"><input id="s-coord" data-f="coord" value="${esc(f.coord)}" placeholder="40.2714, 140.5644 またはGoogleマップのURL" autocomplete="off"><button type="button" class="btn sm" data-act="here">現在地</button></span><span class="hint" id="coordHint">${esc(coordHint(f.coord))}</span></label>
+    <fieldset class="fs"><legend>ベストな月 <small>複数選べます</small></legend><div class="mchips">${Array.from({ length: 12 }, (_, i) => `<button type="button" class="chip" data-act="fchip" data-k="months" data-v="${i + 1}" aria-pressed="${f.months.has(i + 1)}">${i + 1}月</button>`).join('')}</div></fieldset>
+    <fieldset class="fs"><legend>時間帯</legend><div class="chips">${TIMES.map(t => `<button type="button" class="chip" data-act="fchip" data-k="times" data-v="${t}" aria-pressed="${f.times.has(t)}">${t}</button>`).join('')}</div></fieldset>
+    <fieldset class="fs"><legend>相性のいい構図</legend>
+      ${CATS.map(cat => `<div class="fs-g"><span class="fs-l">${cat.n}</span><div class="chips">${COMPS.filter(c => c.cat === cat.k).map(c => `<button type="button" class="chip" data-act="fchip" data-k="compIds" data-v="${c.id}" aria-pressed="${f.compIds.has(c.id)}">${esc(c.name)}</button>`).join('')}</div></div>`).join('')}
+    </fieldset>
+    <label class="fld"><span>メモ</span><textarea id="s-memo" data-f="memo" rows="3" placeholder="駐車場、アクセス、足元、日の出の方角など">${esc(f.memo)}</textarea></label>
+    <div class="form-act"><button class="btn primary wide" data-act="save-spot" id="saveSpot">${f.editId ? '変更を保存' : 'ロケ地を追加'}</button></div>
+  </div>`;
+}
+async function saveSpot() {
+  const f = S.form; if (!f || f.busy) return;
+  if (S.mode === 'loading') { toast('接続中です。数秒待ってからもう一度押してください'); return; }
+  if (!f.name.trim()) { $('#e-name').hidden = false; $('#s-name').focus(); return; }
+  const c = f.coord.trim() ? parseCoord(f.coord) : null;
+  if (f.coord.trim() && !c) { $('#s-coord').focus(); toast('座標を読み取れません'); return; }
+  f.busy = true; const btn = $('#saveSpot'); btn.disabled = true; btn.textContent = '保存中…';
+  try {
+    const prev = f.editId ? spotById(f.editId) : null;
+    const doc = Object.assign({}, prev || { id: newId('s'), kind: 'spot', createdAt: Date.now() }, {
+      name: f.name.trim(), area: f.area.trim(), lat: c ? +c.lat.toFixed(6) : null, lng: c ? +c.lng.toFixed(6) : null,
+      months: [...f.months].sort((a, b) => a - b), times: TIMES.filter(t => f.times.has(t)), compIds: [...f.compIds], memo: f.memo.trim()
+    });
+    await put(doc);
+    goBack(); toast(prev ? '保存しました' : 'ロケ地を追加しました');
+  } catch (e) { f.busy = false; btn.disabled = false; btn.textContent = f.editId ? '変更を保存' : 'ロケ地を追加'; toast(errMsg(e)); }
+}
+async function delSpot(id) {
+  const s = spotById(id); if (!s) return;
+  goBack();
+  try { await remove(s); toast('ロケ地を削除しました'); } catch (e) { toast(errMsg(e)); }
+}
+
+/* ---------- interactions ---------- */
+function arm(btn, label, fn) {
+  if (btn.dataset.armed) { fn(); return; }
+  const old = btn.textContent; btn.dataset.armed = '1'; btn.textContent = label; btn.classList.add('armed');
+  setTimeout(() => { if (btn.isConnected) { delete btn.dataset.armed; btn.textContent = old; btn.classList.remove('armed'); } }, 4000);
+}
+function copyText(text, btn) {
+  const ok = () => { const o = btn.textContent; btn.textContent = 'コピーしました'; setTimeout(() => { if (btn.isConnected) btn.textContent = o; }, 1600); };
+  try {
+    navigator.clipboard.writeText(text).then(ok, () => selectCoord());
+  } catch (e) { selectCoord(); }
+  function selectCoord() { const c = $('#sheet .coord code'); if (c) { const r = document.createRange(); r.selectNodeContents(c); const s = getSelection(); s.removeAllRanges(); s.addRange(r); toast('座標を選択しました。長押しでコピーできます'); } }
+}
+document.addEventListener('click', e => {
+  const t = e.target.closest('[data-act]'); if (!t) return;
+  const a = t.dataset.act, id = t.dataset.id, v = t.dataset.v;
+  switch (a) {
+    case 'tab': setTab(v); break;
+    case 'cat': S.cat = v; savePrefs(); renderZukan(); break;
+    case 'missing': S.onlyMissing = !S.onlyMissing; renderZukan(); break;
+    case 'comp': S.ov = null; openSheet({ type: 'comp', id }); break;
+    case 'photo': S.ov = null; openSheet({ type: 'photo', id }); break;
+    case 'spot': openSheet({ type: 'spot', id }); break;
+    case 'close': closeSheet(); break;
+    case 'back': goBack(); break;
+    case 'draw': draw(true); break;
+    case 'gopt': S.g[v] = !S.g[v]; savePrefs(); renderGacha(); break;
+    case 'glv': S.g.lv = +v; savePrefs(); renderGacha(); break;
+    case 'accept': accept(); break;
+    case 'ch-record': { const x = S.challenges.find(c => c.id === id); if (x) newPhotoForm({ compIds: [x.compId], spotId: x.spotId && spotById(x.spotId) ? x.spotId : '', challengeId: x.id }); break; }
+    case 'ch-skip': skipChallenge(id); break;
+    case 'add-photo': newPhotoForm({ compIds: [id] }); break;
+    case 'add-photo-spot': newPhotoForm({ spotId: id }); break;
+    case 'add-photo-free': newPhotoForm({}); break;
+    case 'comp-chal': compChallenge(id); break;
+    case 'add-spot': newSpotForm(); break;
+    case 'edit-spot': { const s = spotById(id); if (s) editSpotForm(s); break; }
+    case 'del-spot': arm(t, '本当に削除する', () => delSpot(id)); break;
+    case 'edit-photo': { const p = S.photos.find(x => x.id === id); if (p) editPhotoForm(p); break; }
+    case 'del-photo': arm(t, '本当に削除する', () => delPhoto(id)); break;
+    case 'save-photo': savePhoto(); break;
+    case 'save-spot': saveSpot(); break;
+    case 'fchip': {
+      const f = S.form; if (!f) break;
+      const set = f[t.dataset.k]; const key = t.dataset.k === 'months' ? +v : v;
+      if (set.has(key)) set.delete(key); else set.add(key);
+      t.setAttribute('aria-pressed', String(set.has(key)));
+      if (t.dataset.k === 'compIds') { const er = $('#e-comp'); if (er) er.hidden = true; }
+      break;
+    }
+    case 'ov': S.ov = S.ov === id ? null : id; renderSheet(true); break;
+    case 'copy': copyText(v, t); break;
+    case 'data': openSheet({ type: 'data' }); break;
+    case 'export': exportBackup(t); break;
+    case 'here': {
+      if (!navigator.geolocation) { toast(errMsg({ code: 'geo' })); break; }
+      t.disabled = true; t.textContent = '取得中…';
+      navigator.geolocation.getCurrentPosition(pos => {
+        const v2 = pos.coords.latitude.toFixed(6) + ', ' + pos.coords.longitude.toFixed(6);
+        if (S.form) S.form.coord = v2;
+        const i = $('#s-coord'); if (i) i.value = v2;
+        const hnt = $('#coordHint'); if (hnt) hnt.textContent = coordHint(v2);
+        if (t.isConnected) { t.disabled = false; t.textContent = '現在地'; }
+      }, () => { toast(errMsg({ code: 'geo' })); if (t.isConnected) { t.disabled = false; t.textContent = '現在地'; } }, { enableHighAccuracy: true, timeout: 15000, maximumAge: 30000 });
+      break;
+    }
+    case 'spot-draw': S.g.forceSpot = id; closeSheet(); setTab('gacha'); draw(true); break;
+  }
+});
+document.addEventListener('input', e => {
+  const t = e.target; if (!t.dataset || !t.dataset.f || !S.form) return;
+  S.form[t.dataset.f] = t.value;
+  if (t.dataset.f === 'coord') { const h = $('#coordHint'); if (h) h.textContent = coordHint(t.value); }
+  if (t.dataset.f === 'name') { const er = $('#e-name'); if (er) er.hidden = true; }
+});
+document.addEventListener('change', e => {
+  const t = e.target;
+  if (t.id === 'f-file') { if (t.files && t.files[0]) onFile(t.files[0]); return; }
+  if (t.id === 'impFile') { if (t.files && t.files[0]) importBackup(t.files[0]); t.value = ''; return; }
+  if (t.dataset && t.dataset.f && S.form) {
+    S.form[t.dataset.f] = t.value;
+    if (t.dataset.f === 'spotId') { const n = $('#newSpotFld'); if (n) n.hidden = t.value !== '__new'; S.form.gpsNote = ''; }
+  }
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape' && S.sheet) { closeSheet(); return; }
+  const t = e.target;
+  if ((e.key === 'Enter' || e.key === ' ') && t && t.getAttribute && t.getAttribute('role') === 'button' && t.tagName !== 'BUTTON') { e.preventDefault(); t.dispatchEvent(new MouseEvent('click', { bubbles: true })); }
+});
+document.addEventListener('error', e => { const t = e.target; if (t && t.tagName === 'IMG') t.classList.add('broken'); }, true);
+let rz; window.addEventListener('resize', () => { clearTimeout(rz); rz = setTimeout(() => { if (S.tab === 'spots') renderMap(); }, 150); });
+
+/* ---------- start ---------- */
+const h0 = (location.hash || '').replace('#', '');
+if (['zukan', 'gacha', 'spots'].includes(h0)) S.tab = h0;
+derive();
+draw(false);
+setTab(S.tab);
+boot();
+if ('serviceWorker' in navigator && location.protocol === 'https:') window.addEventListener('load', () => { navigator.serviceWorker.register('sw.js').catch(() => {}); });
+})();
+</script>
+</body>
+</html>
